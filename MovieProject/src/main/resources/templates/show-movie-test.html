@@ -49,23 +49,23 @@
             <img
                     alt="Movie Poster"
                     class="movie-poster"
-                    th:src="${image}"
+                    th:src="${movie.imageURL}"
             >
         </div>
         <!-- Movie Details -->
         <div class="col-md-8">
             <div class="card-body">
-                <h5 class="movie-title" th:text="${title}"></h5>
-                <p class="movie-year" th:text="${year} + ' || ' + ${rated}"></p>
+                <h5 class="movie-title" th:text="${movie.title}"></h5>
+                <p class="movie-year" th:text="${movie.year} + ' || ' + ${movie.rated}"></p>
                 <hr>
                 <p class="card-text">
-                    <strong>Director: <span th:text="${director}"></span></strong> <br><br>
-                    <strong>Genre: <span th:text="${genre}"></span></strong> <br><br>
-                    <strong>Plot: <span th:text="${plot}"></span></strong> <br><br>
-                    <strong>Actors: <span th:text="${actors}"></span></strong> <br><br>
-                    <strong>Rating: <span th:text="${score} +'/10'"></span></strong> <br>
+                    <strong>Director: <span th:text="${movie.director}"></span></strong> <br><br>
+                    <strong>Genre: <span th:text="${movie.genre}"></span></strong> <br><br>
+                    <strong>Plot: <span th:text="${movie.plot}"></span></strong> <br><br>
+                    <strong>Actors: <span th:text="${movie.actors}"></span></strong> <br><br>
+                    <strong>Rating: <span th:text="${movie.score} +'/10'"></span></strong> <br>
                 </p>
-                <a class="btn btn-info" target="_blank" th:href="${imdb}">Watch Trailer</a>
+                <a class="btn btn-info" target="_blank" th:href="${movie.imdbURL}+${movie.imdbId}+'/'">Watch Trailer</a>
             </div>
         </div>
     </div>

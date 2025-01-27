@@ -4,6 +4,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MovieSearch {
+
+    /**
+     * MovieSearch class holds the data for the movie that the user is searching for.
+     * Data will be acquired through input fields on the webpage and bound to this POJO.
+     */
     private String title;
     private String year;
 

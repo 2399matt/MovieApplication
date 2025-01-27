@@ -1,13 +1,14 @@
 package com.MattyDubs.MovieProject.dao;
 
 
+import com.MattyDubs.MovieProject.entity.CustomUser;
 import com.MattyDubs.MovieProject.entity.Movie;
 
 import java.util.List;
 
 public interface MovieDAO {
 
-    Movie save(Movie movie);
+    void save(Movie movie, CustomUser user);
 
     void deleteMovie(Movie movie);
 
@@ -16,5 +17,9 @@ public interface MovieDAO {
     List<Movie> findByTitleYear(String title, String year);
 
     List<Movie> findAll();
+
+    List<Movie> findAllByUser(CustomUser user);
+
+    List<Movie> findByTitleYearUser(String title, String year, CustomUser user);
 
 }

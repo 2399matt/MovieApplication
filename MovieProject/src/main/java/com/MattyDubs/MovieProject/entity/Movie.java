@@ -3,10 +3,17 @@ package com.MattyDubs.MovieProject.entity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "movie")
 public class Movie {
 
+    /**
+     * Movie entity class used to interact with the movie table in the DB.
+     * Contains a CustomUser field for the many-to-one relationship.
+     * Class is also used for the API call to map the JSON info to our POJO.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -52,6 +59,11 @@ public class Movie {
     @Column(name = "director")
     private String director;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private CustomUser user;
+
+
     public Movie() {
 
     }
@@ -68,6 +80,14 @@ public class Movie {
         this.imageURL = imageURL;
         this.imdbId = imdbId;
         this.director = director;
+    }
+
+    public CustomUser getUser() {
+        return user;
+    }
+
+    public void setUser(CustomUser user) {
+        this.user = user;
     }
 
     public String getImdbURL() {
@@ -175,5 +195,17 @@ public class Movie {
                 ", plot='" + plot + '\'' +
                 ", score='" + score + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Movie movie = (Movie) o;
+        return id == movie.id && Objects.equals(title, movie.title) && Objects.equals(year, movie.year) && Objects.equals(rated, movie.rated) && Objects.equals(genre, movie.genre) && Objects.equals(actors, movie.actors) && Objects.equals(plot, movie.plot) && Objects.equals(score, movie.score) && Objects.equals(imageURL, movie.imageURL) && Objects.equals(imdbId, movie.imdbId) && Objects.equals(director, movie.director) && Objects.equals(user, movie.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, year, rated, genre, actors, plot, score, imageURL, imdbId, director, user);
     }
 }

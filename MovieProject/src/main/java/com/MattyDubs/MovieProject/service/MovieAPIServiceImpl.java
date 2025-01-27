@@ -8,6 +8,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class MovieAPIServiceImpl implements MovieAPIService {
 
+    /**
+     * MovieConfig class is used to build the WebClient from our MovieConfig class
+     * and retrieve the Movie object for our controller to use.
+     */
     private final MovieConfig movieConfig;
 
     @Autowired

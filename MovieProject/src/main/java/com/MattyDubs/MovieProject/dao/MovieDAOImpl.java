@@ -1,5 +1,6 @@
 package com.MattyDubs.MovieProject.dao;
 
+import com.MattyDubs.MovieProject.entity.CustomUser;
 import com.MattyDubs.MovieProject.entity.Movie;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,17 +12,23 @@ import java.util.List;
 @Repository
 public class MovieDAOImpl implements MovieDAO {
 
+    /**
+     * MovieDAO class used to interact with the movie table in our DB.
+     * basic methods for saving, removing, and finding movies based on different needs.
+     */
     private final EntityManager entityManager;
 
     @Autowired
-    public MovieDAOImpl(EntityManager entityManager) {
+    public MovieDAOImpl(EntityManager entityManager, UserDAO userDAO) {
         this.entityManager = entityManager;
     }
 
     @Override
     @Transactional
-    public Movie save(Movie movie) {
-        return entityManager.merge(movie);
+    public void save(Movie movie, CustomUser user) {
+        List<Movie> movies = findByTitleYearUser(movie.getTitle(), movie.getYear(), user);
+        if (movies.isEmpty())
+            entityManager.persist(movie);
     }
 
     @Override
@@ -38,14 +45,30 @@ public class MovieDAOImpl implements MovieDAO {
 
     @Override
     public List<Movie> findByTitleYear(String title, String year) {
-        return entityManager.createQuery("SELECT m FROM Movie m WHERE m.title=:title AND m.year=:year")
+        return entityManager.createQuery("SELECT m FROM Movie m WHERE m.title=:title AND m.year=:year", Movie.class)
                 .setParameter("title", title)
                 .setParameter("year", year)
                 .getResultList();
     }
 
     public List<Movie> findAll() {
-        return entityManager.createQuery("SELECT m FROM Movie m").getResultList();
+        return entityManager.createQuery("SELECT m FROM Movie m", Movie.class).getResultList();
+    }
+
+    public List<Movie> findAllByUser(CustomUser user) {
+        return entityManager.createQuery("SELECT m FROM Movie m WHERE m.user.id=:id", Movie.class)
+                .setParameter("id", user.getId())
+                .getResultList();
+
+    }
+
+    public List<Movie> findByTitleYearUser(String title, String year, CustomUser user) {
+        return entityManager.createQuery("SELECT m FROM Movie m WHERE m.title = :title AND m.year=:year AND m.user.id = :id", Movie.class)
+                .setParameter("title", title)
+                .setParameter("year", year)
+                .setParameter("id", user.getId())
+                .getResultList();
+
     }
 
 

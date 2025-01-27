@@ -1,15 +1,21 @@
 package com.MattyDubs.MovieProject.service;
 
 import com.MattyDubs.MovieProject.dao.MovieDAO;
+import com.MattyDubs.MovieProject.entity.CustomUser;
 import com.MattyDubs.MovieProject.entity.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 public class MovieServiceImpl implements MovieService {
 
+    /**
+     * Service class that uses a movieDAO object to interact with the database.
+     * Provides an extra layer between our controller and the DB.
+     */
     private final MovieDAO movieDAO;
 
     @Autowired
@@ -18,11 +24,13 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public Movie save(Movie movie) {
-        return movieDAO.save(movie);
+    @Transactional
+    public void save(Movie movie, CustomUser user) {
+         movieDAO.save(movie, user);
     }
 
     @Override
+    @Transactional
     public void deleteMovie(Movie movie) {
         movieDAO.deleteMovie(movie);
     }
@@ -40,5 +48,15 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public List<Movie> findAll() {
         return movieDAO.findAll();
+    }
+
+    @Override
+    public List<Movie> findAllByUser(CustomUser user) {
+        return movieDAO.findAllByUser(user);
+    }
+
+    @Override
+    public List<Movie> findByTitleYearUser(String title, String year, CustomUser user){
+        return movieDAO.findByTitleYearUser(title, year, user);
     }
 }

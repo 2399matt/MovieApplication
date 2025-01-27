@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 
 @Configuration
 public class MovieConfig {
+
     @Value("${movieURL}")
     private String movieURL;
     @Value("${movieKey}")
@@ -18,6 +19,12 @@ public class MovieConfig {
 
     }
 
+    /**
+     * WebClient that is used to call the OMDB API for the movie information.
+     * @param title title of the movie
+     * @param year year that the movie was released
+     * @return The ready-to-build WebClient that houses the URL for the API call
+     */
     public WebClient.Builder webClientBuilder(String title, String year) {
         String encodedTitle = URLEncoder.encode(title, StandardCharsets.UTF_8);
         System.out.println(movieURL + movieKey + "&t=" + encodedTitle + "&y=" + year);

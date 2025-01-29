@@ -26,14 +26,16 @@ public class MovieConfig {
      * @return The ready-to-build WebClient that houses the URL for the API call
      */
     public WebClient.Builder webClientBuilder(String title, String year) {
-        String encodedTitle = URLEncoder.encode(title, StandardCharsets.UTF_8);
-        System.out.println(movieURL + movieKey + "&t=" + encodedTitle + "&y=" + year);
-        return WebClient.builder().baseUrl(movieURL + movieKey + "&t=" + title + "&y=" + year);
+        return WebClient.builder().baseUrl(movieURL + movieKey + "&s=" + title + "&y=" + year);
     }
 
     public WebClient.Builder webClientBuilder(String title) {
-        String encodedTitle = URLEncoder.encode(title, StandardCharsets.UTF_8);
-        return WebClient.builder().baseUrl(movieURL + movieKey + "&t=" + title);
+        return WebClient.builder().baseUrl(movieURL + movieKey + "&s=" + title);
+
+    }
+
+    public WebClient.Builder getSingleMovie(String title, String year){
+        return WebClient.builder().baseUrl(movieURL + movieKey + "&t=" + title + "&y=" + year);
 
     }
 }

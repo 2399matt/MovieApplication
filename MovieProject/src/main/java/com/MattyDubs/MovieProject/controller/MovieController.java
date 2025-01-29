@@ -3,6 +3,7 @@ package com.MattyDubs.MovieProject.controller;
 
 import com.MattyDubs.MovieProject.entity.CustomUser;
 import com.MattyDubs.MovieProject.entity.Movie;
+import com.MattyDubs.MovieProject.entity.MovieListContainer;
 import com.MattyDubs.MovieProject.entity.MovieSearch;
 import com.MattyDubs.MovieProject.service.MovieAPIService;
 import com.MattyDubs.MovieProject.service.MovieService;
@@ -96,16 +97,16 @@ public class MovieController {
      */
     @PostMapping("/showMovie")
     public String showMovie(@ModelAttribute("movieInfo") MovieSearch movieSearch, Model model) {
-        Movie movie;
+
+        MovieListContainer movieListContainer;
         if (!movieSearch.getYear().isBlank()) {
-            movie = movieAPIService.getMovieByTitleAndYear(movieSearch.getTitle(), movieSearch.getYear());
-            System.out.println(movie);
+            movieListContainer = movieAPIService.getMovieByTitleAndYear(movieSearch.getTitle(), movieSearch.getYear());
         } else {
-            movie = movieAPIService.getMovieByTitle(movieSearch.getTitle());
-            System.out.println(movie);
+            movieListContainer = movieAPIService.getMovieByTitle(movieSearch.getTitle());
         }
-        model.addAttribute("movie", movie);
-        return "show-movie-test";
+        List<Movie> movies = movieListContainer.getMovies();
+        model.addAttribute("movies", movies);
+        return "search-movie-list";
     }
 
     /**
@@ -118,7 +119,7 @@ public class MovieController {
      */
     @GetMapping("/showMovieDetails")
     public String showMovieDetails(@RequestParam("title") String title, @RequestParam("year") String year, Model model) {
-        Movie movie = movieAPIService.getMovieByTitleAndYear(title, year);
+        Movie movie = movieAPIService.getSingleMovie(title, year);
         model.addAttribute("movie", movie);
         return "show-movie-test";
     }

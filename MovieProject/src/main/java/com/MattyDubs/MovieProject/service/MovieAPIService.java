@@ -2,13 +2,16 @@ package com.MattyDubs.MovieProject.service;
 
 import com.MattyDubs.MovieProject.entity.CustomUser;
 import com.MattyDubs.MovieProject.entity.Movie;
+import com.MattyDubs.MovieProject.entity.MovieListContainer;
 
 import java.util.List;
 
 public interface MovieAPIService {
 
-    Movie getMovieByTitleAndYear(String title, String year);
+    MovieListContainer getMovieByTitleAndYear(String title, String year);
 
-    Movie getMovieByTitle(String title);
+    MovieListContainer getMovieByTitle(String title);
+
+    Movie getSingleMovie(String title, String year);
 
 }

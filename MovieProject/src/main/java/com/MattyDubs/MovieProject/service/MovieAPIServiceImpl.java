@@ -2,6 +2,7 @@ package com.MattyDubs.MovieProject.service;
 
 import com.MattyDubs.MovieProject.config.MovieConfig;
 import com.MattyDubs.MovieProject.entity.Movie;
+import com.MattyDubs.MovieProject.entity.MovieListContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +21,16 @@ public class MovieAPIServiceImpl implements MovieAPIService {
     }
 
     @Override
-    public Movie getMovieByTitleAndYear(String title, String year) {
-        return movieConfig.webClientBuilder(title, year).build().get().retrieve().bodyToMono(Movie.class).block();
+    public MovieListContainer getMovieByTitleAndYear(String title, String year) {
+        return movieConfig.webClientBuilder(title, year).build().get().retrieve().bodyToMono(MovieListContainer.class).block();
     }
 
     @Override
-    public Movie getMovieByTitle(String title) {
-        return movieConfig.webClientBuilder(title).build().get().retrieve().bodyToMono(Movie.class).block();
+    public MovieListContainer getMovieByTitle(String title) {
+        return movieConfig.webClientBuilder(title).build().get().retrieve().bodyToMono(MovieListContainer.class).block();
+    }
+
+    public Movie getSingleMovie(String title, String year){
+        return movieConfig.getSingleMovie(title, year).build().get().retrieve().bodyToMono(Movie.class).block();
     }
 }

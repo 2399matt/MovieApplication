@@ -38,11 +38,10 @@ public class RegistrationController {
 
     /**
      * The login endpoint, configured in Spring-Security to be the default page for login.
-     * @param model The model.
      * @return the webpage for the login-form.
      */
     @GetMapping("/login")
-    public String loginForm(Model model) {
+    public String loginForm() {
         return "login-form";
     }
 

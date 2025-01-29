@@ -63,13 +63,17 @@ public class Movie {
     @JoinColumn(name = "user_id")
     private CustomUser user;
 
+    @JsonProperty("Type")
+    @Transient
+    private String type;
+
 
     public Movie() {
 
     }
 
     public Movie(String title, String year, String rated, String genre, String actors, String plot,
-                 String score, String imageURL, String imdbId, String director, String imdbURL) {
+                 String score, String imageURL, String imdbId, String director, String imdbURL, String type) {
         this.title = title;
         this.year = year;
         this.rated = rated;
@@ -80,6 +84,14 @@ public class Movie {
         this.imageURL = imageURL;
         this.imdbId = imdbId;
         this.director = director;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public CustomUser getUser() {

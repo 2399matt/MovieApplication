@@ -89,20 +89,21 @@ public class MovieController {
 
     /**
      * ShowMovie endpoint is reached after the user has searched for a movie. Takes in the MovieSearch object
-     * that contains the title/year, and calls the API to retrieve a Movie object for that movie.
-     * Movie is added to the model and the information is displayed on show-movie.
+     * that contains the title/year, and calls the API to retrieve a list of matching movie objects.
+     * Movies list is added to the model and the information is displayed on search list.
      * @param movieSearch The MovieSearch object that holds the title/year of the movie.
      * @param model The model.
      * @return webpage to display the movie information.
      */
     @PostMapping("/showMovie")
-    public String showMovie(@ModelAttribute("movieInfo") MovieSearch movieSearch, Model model) {
+    public String showMovie(@ModelAttribute("movieInfo") MovieSearch movieSearch,
+                            Model model, @RequestParam("type") String type) {
 
         MovieListContainer movieListContainer;
         if (!movieSearch.getYear().isBlank()) {
-            movieListContainer = movieAPIService.getMovieByTitleAndYear(movieSearch.getTitle(), movieSearch.getYear());
+            movieListContainer = movieAPIService.getMovieByTitleAndYear(movieSearch.getTitle(), movieSearch.getYear(), type);
         } else {
-            movieListContainer = movieAPIService.getMovieByTitle(movieSearch.getTitle());
+            movieListContainer = movieAPIService.getMovieByTitle(movieSearch.getTitle(), type);
         }
         List<Movie> movies = movieListContainer.getMovies();
         model.addAttribute("movies", movies);
@@ -115,7 +116,7 @@ public class MovieController {
      * @param title title of the movie
      * @param year year that the movie was released
      * @param model the model
-     * @return show-movie webpage, same as in the showMovie method.
+     * @return show-movie webpage, display detailed info on a single movie.
      */
     @GetMapping("/showMovieDetails")
     public String showMovieDetails(@RequestParam("title") String title, @RequestParam("year") String year, Model model) {

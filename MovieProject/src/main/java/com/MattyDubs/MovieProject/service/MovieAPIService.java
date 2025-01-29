@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface MovieAPIService {
 
-    MovieListContainer getMovieByTitleAndYear(String title, String year);
+    MovieListContainer getMovieByTitleAndYear(String title, String year, String type);
 
-    MovieListContainer getMovieByTitle(String title);
+    MovieListContainer getMovieByTitle(String title, String type);
 
     Movie getSingleMovie(String title, String year);
 

@@ -25,12 +25,12 @@ public class MovieConfig {
      * @param year year that the movie was released
      * @return The ready-to-build WebClient that houses the URL for the API call
      */
-    public WebClient.Builder webClientBuilder(String title, String year) {
-        return WebClient.builder().baseUrl(movieURL + movieKey + "&s=" + title + "&y=" + year);
+    public WebClient.Builder webClientBuilder(String title, String year, String type) {
+        return WebClient.builder().baseUrl(movieURL + movieKey + "&s=" + title + "&y=" + year+"&type="+type);
     }
 
-    public WebClient.Builder webClientBuilder(String title) {
-        return WebClient.builder().baseUrl(movieURL + movieKey + "&s=" + title);
+    public WebClient.Builder webClientBuilder(String title, String type) {
+        return WebClient.builder().baseUrl(movieURL + movieKey + "&s=" + title+"&type=" + type);
 
     }
 

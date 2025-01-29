@@ -3,6 +3,7 @@ package com.MattyDubs.MovieProject.controller;
 import com.MattyDubs.MovieProject.dao.UserDAO;
 import com.MattyDubs.MovieProject.entity.CustomUser;
 import com.MattyDubs.MovieProject.entity.WebUser;
+import com.MattyDubs.MovieProject.security.PassWordEncoder;
 import com.MattyDubs.MovieProject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -18,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/register")
 public class RegistrationController {
+
+    @Autowired
+    private PassWordEncoder encoder;
 
     @Autowired
     private JdbcUserDetailsManager jdbcUserDetailsManager;
@@ -57,7 +61,7 @@ public class RegistrationController {
         userService.save(customUser);
         UserDetails user = User.builder()
                 .username(webUser.getUsername())
-                .password("{noop}" + webUser.getPassword())
+                .password(encoder.encoder().encode(webUser.getPassword()))
                 .roles("USER")
                 .build();
         jdbcUserDetailsManager.createUser(user);

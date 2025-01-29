@@ -28,7 +28,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public CustomUser findByUsername(String username) {
-        CustomUser user = (CustomUser) entityManager.createQuery("SELECT u FROM CustomUser u WHERE u.username=:username")
+        CustomUser user = entityManager.createQuery("SELECT u FROM CustomUser u WHERE u.username=:username", CustomUser.class)
                 .setParameter("username", username)
                 .getSingleResult();
         if (user == null)

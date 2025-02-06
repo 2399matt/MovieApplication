@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>No Access</title>
 </head>
 <body>
-Access Restricted.
+<h1>Access Restricted.</h1>
+<a th:href="@{/movies/search}" >Back to Search Page</a> <br><br>
+<a th:href="@{/}">Back to login page</a>
 </body>
 </html>

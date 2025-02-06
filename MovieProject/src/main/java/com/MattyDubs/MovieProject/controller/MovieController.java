@@ -9,17 +9,17 @@ import com.MattyDubs.MovieProject.service.MovieAPIService;
 import com.MattyDubs.MovieProject.service.MovieService;
 import com.MattyDubs.MovieProject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
 @RequestMapping("/movies")
 public class MovieController {
+
     private final MovieService movieService;
     private final MovieAPIService movieAPIService;
     private final UserService userService;
@@ -49,11 +49,14 @@ public class MovieController {
      * @return the list-webpage that holds all the user's saved movies.
      */
     @GetMapping("/list")
-    public String listMovies(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        CustomUser user = userService.findByUsername(auth.getName());
-        List<Movie> movies = movieService.findAllByUser(user);
-        model.addAttribute("movies", movies);
+    public String listMovies(Model model, Principal principal) {
+        //CustomUser user = userService.findByUsername(principal.getName());
+
+        CustomUser user = userService.findUserAndMovies(principal.getName());
+        model.addAttribute("movies", user.getMovies());
+
+       // List<Movie> movies = movieService.findAllByUser(user);
+       // model.addAttribute("movies", movies);
         return "movie-list";
     }
 
@@ -64,13 +67,12 @@ public class MovieController {
      * @return The user back to the list, with the new movie added.
      */
     @PostMapping("/save")
-    public String saveMovie(@ModelAttribute("movie") Movie movie) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        CustomUser user = userService.findByUsername(auth.getName());
+    public String saveMovie(@ModelAttribute("movie") Movie movie, Principal principal) {
+        CustomUser user = userService.findByUsername(principal.getName());
         movie.setUser(user);
+        user.getMovies().add(movie); // Not really necessary, just for memory storage of movies.
         movieService.save(movie, user);
         userService.save(user);
-
         return "redirect:/movies/list";
     }
 

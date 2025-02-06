@@ -7,4 +7,6 @@ public interface UserDAO {
     CustomUser save(CustomUser user);
 
     CustomUser findByUsername(String username);
+
+    CustomUser findUserAndMovies(String username);
 }

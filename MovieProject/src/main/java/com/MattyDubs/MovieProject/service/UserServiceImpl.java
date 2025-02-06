@@ -28,4 +28,9 @@ public class UserServiceImpl implements UserService {
     public CustomUser findByUsername(String username) {
         return userDAO.findByUsername(username);
     }
+
+    @Override
+    public CustomUser findUserAndMovies(String username) {
+        return userDAO.findUserAndMovies(username);
+    }
 }

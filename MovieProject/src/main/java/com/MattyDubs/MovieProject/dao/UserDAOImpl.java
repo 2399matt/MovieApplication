@@ -35,4 +35,14 @@ public class UserDAOImpl implements UserDAO {
             throw new RuntimeException("User not found.");
         return user;
     }
+
+    public CustomUser findUserAndMovies(String username){
+
+        // JOIN FETCH used here to reduce the number of queries to the DB.
+        // Will return the user and all of their associated movies in one query for the list endpoint.
+
+        return entityManager.createQuery("SELECT u FROM CustomUser u LEFT JOIN FETCH u.movies WHERE u.username=:username", CustomUser.class)
+                .setParameter("username", username)
+                .getSingleResult();
+    }
 }

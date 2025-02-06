@@ -1,9 +1,8 @@
 package com.MattyDubs.MovieProject.controller;
 
-import com.MattyDubs.MovieProject.dao.UserDAO;
 import com.MattyDubs.MovieProject.entity.CustomUser;
 import com.MattyDubs.MovieProject.entity.WebUser;
-import com.MattyDubs.MovieProject.security.PassWordEncoder;
+import com.MattyDubs.MovieProject.security.PasswordEncoder;
 import com.MattyDubs.MovieProject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class RegistrationController {
 
     @Autowired
-    private PassWordEncoder encoder;
+    private PasswordEncoder encoder;
 
     @Autowired
     private JdbcUserDetailsManager jdbcUserDetailsManager;

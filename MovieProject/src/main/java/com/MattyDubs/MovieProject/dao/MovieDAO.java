@@ -22,4 +22,6 @@ public interface MovieDAO {
 
     List<Movie> findByTitleYearUser(String title, String year, CustomUser user);
 
+    Movie singleFindByTitleYear(String title, String year);
+
 }

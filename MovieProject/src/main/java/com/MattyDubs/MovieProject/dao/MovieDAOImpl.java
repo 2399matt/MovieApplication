@@ -68,6 +68,17 @@ public class MovieDAOImpl implements MovieDAO {
                 .setParameter("year", year)
                 .setParameter("id", user.getId())
                 .getResultList();
+    }
+
+    public Movie singleFindByTitleYear(String title, String year) {
+        Movie movie = entityManager.createQuery("SELECT m FROM Movie m WHERE m.title = :title AND m.year=:year", Movie.class)
+                .setParameter("title", title)
+                .setParameter("year", year)
+                .getResultList().stream().findFirst().orElse(null);
+        if (movie != null)
+            return movie;
+        else
+            throw new RuntimeException("Movie not found");
 
     }
 

@@ -2,32 +2,58 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Movie List</title>
-    <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-    >
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .movie-poster {
-          width: 100px;
-          height: auto;
-          object-fit: cover;
-          border-radius: 5px;
-        }
-        .table th, .table td {
-          vertical-align: middle;
+        body {
+            background-color: #f4f4f4;
+            padding: 20px;
         }
         .table-container {
-          padding: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .movie-poster {
+            width: 80px;
+            height: auto;
+            border-radius: 5px;
+        }
+        tbody tr td {
+            vertical-align: middle;
         }
     </style>
 </head>
 <body>
-<div class="container table-container">
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light w-100">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Movie Tracker</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/movies/search}">Back to Search</a>
+                </li>
+                <li class="nav-item">
+                    <form action="#" method="POST" th:action="@{/logout}" class="d-inline">
+                        <input class="btn btn-danger btn-custom" type="submit" value="Logout"/>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container table-container mt-4">
     <h2 class="mb-4">Movie List</h2>
-    <table class="table table-bordered table-striped">
-        <thead>
+    <table class="table table-hover table-striped">
+        <thead class="table-dark">
         <tr>
             <th>Poster</th>
             <th>Title</th>
@@ -38,32 +64,19 @@
         </tr>
         </thead>
         <tbody>
-        <!-- Example Movie Row -->
         <tr th:each="movie : ${movies}">
             <td><img th:src="${movie.imageURL}" alt="Movie Poster" class="movie-poster"></td>
             <td th:text="${movie.title}"></td>
             <td th:text="${movie.year}"></td>
             <td th:text="${movie.genre}"></td>
             <td th:text="${movie.rated}"></td>
-            <td><a type="button" class="btn btn-dark" th:href="@{/movies/showMovieDetails(title=${movie.title}, year=${movie.year})}">Movie details</a>
-                <a type="button" class="btn btn-danger" th:href="@{/movies/deleteMovie(id = ${movie.id})}">Remove Movie</a>
-            </td>
-            <!--
             <td>
-                <a th:href="@{/movies/details/{id}(id=${movie.id})}" class="btn btn-info btn-sm">Details</a>
-                <a th:href="@{/movies/edit/{id}(id=${movie.id})}" class="btn btn-warning btn-sm">Edit</a>
-                <a th:href="@{/movies/delete/{id}(id=${movie.id})}" class="btn btn-danger btn-sm">Delete</a>
-            </td>-->
+                <a class="btn btn-dark btn-sm btn-custom" th:href="@{/movies/showMovieDetails(title=${movie.title}, year=${movie.year})}">Details</a>
+                <a class="btn btn-danger btn-sm btn-custom" th:href="@{/movies/deleteMovie(id=${movie.id})}">Remove</a>
+            </td>
         </tr>
         </tbody>
     </table>
-    <div class="text-center mt-3">
-        <a class="btn btn-secondary" th:href="@{/movies/search}">Back to Search Page</a>
-    </div>
-    <br>
-    <form action="#" method="POST" th:action="@{/logout}">
-        <input class="btn btn-info" type="submit" value="Logout"/>
-    </form>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

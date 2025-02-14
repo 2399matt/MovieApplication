@@ -19,4 +19,6 @@ public interface MovieService {
     List<Movie> findAllByUser(CustomUser user);
 
     List<Movie> findByTitleYearUser(String title, String year, CustomUser user);
+
+    Movie singleFindByTitleYear(String title, String year);
 }

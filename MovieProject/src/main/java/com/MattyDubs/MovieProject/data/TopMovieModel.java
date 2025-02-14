@@ -1,19 +1,16 @@
-package com.MattyDubs.MovieProject.entity;
+package com.MattyDubs.MovieProject.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-
 import java.util.Objects;
 
 @Entity
-@Table(name = "movie")
-public class Movie {
+@Table(name="top_movies")
+public class TopMovieModel{
 
-    /**
-     * Movie entity class used to interact with the movie table in the DB.
-     * Contains a CustomUser field for the many-to-one relationship.
-     * Class is also used for the API call to map the JSON info to our POJO.
-     */
+    // Separate movie entity for the top 250 movies table.
+    // This is to avoid conflicts with the movie entity used for the user's saved movies.
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -59,20 +56,14 @@ public class Movie {
     @Column(name = "director")
     private String director;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private CustomUser user;
-
-    @JsonProperty("Type")
-    @Transient
-    private String type;
 
 
-    public Movie() {
+
+    public TopMovieModel() {
 
     }
 
-    public Movie(String title, String year, String rated, String genre, String actors, String plot,
+    public TopMovieModel(String title, String year, String rated, String genre, String actors, String plot,
                  String score, String imageURL, String imdbId, String director, String imdbURL, String type) {
         this.title = title;
         this.year = year;
@@ -86,21 +77,6 @@ public class Movie {
         this.director = director;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public CustomUser getUser() {
-        return user;
-    }
-
-    public void setUser(CustomUser user) {
-        this.user = user;
-    }
 
     public String getImdbURL() {
         String imdbURL = "https://www.imdb.com/title/";
@@ -212,27 +188,13 @@ public class Movie {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Movie movie = (Movie) o;
-        return id == movie.id && Objects.equals(title, movie.title) && Objects.equals(year, movie.year) && Objects.equals(rated, movie.rated) && Objects.equals(genre, movie.genre) && Objects.equals(actors, movie.actors) && Objects.equals(plot, movie.plot) && Objects.equals(score, movie.score) && Objects.equals(imageURL, movie.imageURL) && Objects.equals(imdbId, movie.imdbId) && Objects.equals(director, movie.director) && Objects.equals(user, movie.user);
+        TopMovieModel movie = (TopMovieModel) o;
+        return id == movie.id && Objects.equals(title, movie.title) && Objects.equals(year, movie.year) && Objects.equals(rated, movie.rated) && Objects.equals(genre, movie.genre) && Objects.equals(actors, movie.actors) && Objects.equals(plot, movie.plot) && Objects.equals(score, movie.score) && Objects.equals(imageURL, movie.imageURL) && Objects.equals(imdbId, movie.imdbId) && Objects.equals(director, movie.director);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, year, rated, genre, actors, plot, score, imageURL, imdbId, director, user);
+        return Objects.hash(id, title, year, rated, genre, actors, plot, score, imageURL, imdbId, director);
     }
 
-    public Movie copyMovie(Movie movie){
-        this.title = movie.getTitle();
-        this.year = movie.getYear();
-        this.rated = movie.getRated();
-        this.genre = movie.getGenre();
-        this.actors = movie.getActors();
-        this.plot = movie.getPlot();
-        this.score = movie.getScore();
-        this.imageURL = movie.getImageURL();
-        this.imdbId = movie.getImdbId();
-        this.director = movie.getDirector();
-        this.user = movie.getUser();
-        return this;
-    }
 }

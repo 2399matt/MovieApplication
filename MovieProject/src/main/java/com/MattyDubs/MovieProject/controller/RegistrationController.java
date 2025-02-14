@@ -30,6 +30,7 @@ public class RegistrationController {
 
     /**
      * Mapping for the registration form.
+     *
      * @param model The model that the controller uses to pass information to the webpage.
      * @return the registration form for new users.
      */
@@ -41,6 +42,7 @@ public class RegistrationController {
 
     /**
      * The login endpoint, configured in Spring-Security to be the default page for login.
+     *
      * @return the webpage for the login-form.
      */
     @GetMapping("/login")
@@ -51,6 +53,7 @@ public class RegistrationController {
     /**
      * Post-handling for adding a new user. We create the customUser from the model attribute that holds the
      * WebUser object. Then we add the user to Spring-Security using the UserDetails manager.
+     *
      * @param webUser The user object needed for our Spring-Security setup.
      * @return the login form, so that the new user can log in.
      */

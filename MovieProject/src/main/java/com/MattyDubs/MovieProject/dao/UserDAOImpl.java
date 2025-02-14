@@ -28,6 +28,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public CustomUser findByUsername(String username) {
+        // TODO: Switch to optional.
         CustomUser user = entityManager.createQuery("SELECT u FROM CustomUser u WHERE u.username=:username", CustomUser.class)
                 .setParameter("username", username)
                 .getSingleResult();
@@ -40,6 +41,8 @@ public class UserDAOImpl implements UserDAO {
 
         // JOIN FETCH used here to reduce the number of queries to the DB.
         // Will return the user and all of their associated movies in one query for the list endpoint.
+        // WE COULD also do user.getMovies() and since the we're in a transaction, it would lazy load the movies. But this is more explicit, and would
+        // still technically be two queries, so join fetch is safer.
 
         return entityManager.createQuery("SELECT u FROM CustomUser u LEFT JOIN FETCH u.movies WHERE u.username=:username", CustomUser.class)
                 .setParameter("username", username)

@@ -2,67 +2,93 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Movie Input Form</title>
-    <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Movie Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-          background-color: #f8f9fa;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          height: 100vh;
+            background-color: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 60px; /* Account for navbar */
+        }
+        .navbar {
+            position: fixed; /* Keeps the navbar fixed at the top */
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
         }
         .card {
-          border-radius: 15px;
-          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px; /* Increase max-width for better spacing */
+            margin-top: 80px; /* Push the card below the navbar */
+            padding: 20px;
+            background-color: white;
+        }
+        .btn-custom {
+            border-radius: 25px;
         }
         .form-label {
-          font-weight: bold;
+            font-weight: bold;
+        }
+        .form-control, .btn {
+            border-radius: 10px; /* Make the form controls and buttons rounder */
         }
     </style>
 </head>
 <body>
-<div class="card p-4" style="max-width: 400px; width: 100%;">
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Movie Tracker</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/movies/browse}">Browse Movies</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/movies/list}">Movie List</a>
+                </li>
+                <li class="nav-item">
+                    <form action="#" method="POST" th:action="@{/logout}" class="d-inline">
+                        <input class="btn btn-info btn-custom" type="submit" value="Logout"/>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Movie Search Form -->
+<div class="card">
     <h4 class="text-center mb-4">Movie Information</h4>
     <form id="movieForm" method="POST" th:action="@{/movies/showMovie}" th:object="${movieInfo}">
         <div class="mb-3">
-            <label class="form-label" for="movieTitle">Movie Title</label>
-            <input
-                    class="form-control"
-                    id="movieTitle"
-                    placeholder="Enter movie title"
-                    required
-                    th:field="*{title}"
-                    type="text"
-            >
+            <label class="form-label">Movie Title</label>
+            <input class="form-control" placeholder="Enter movie title" required th:field="*{title}" type="text">
         </div>
         <div class="mb-3">
-            <label class="form-label" for="movieYear">Movie Year</label>
-            <input
-                    class="form-control"
-                    id="movieYear"
-                    placeholder="Enter release year"
-                    th:field="*{year}"
-                    type="number"
-            >
-            <label>
+            <label class="form-label">Movie Year</label>
+            <input class="form-control" placeholder="Enter release year" th:field="*{year}" type="number">
+        </div>
+        <div class="mb-3">
+            <label class="form-check-label">
                 <input type="radio" name="type" value="movie" checked> Movie
             </label>
-            <label>
+            <label class="form-check-label ms-3">
                 <input type="radio" name="type" value="series"> Series
             </label>
         </div>
-
-        <button class="btn btn-primary w-100" type="submit">Search</button>
-    </form>
-    <a class="btn btn-warning w-100 mt-3" th:href="@{/movies/list}">Movie List</a>
-    <br>
-    <form action="#" method="POST" th:action="@{/logout}">
-        <input class="btn btn-info w-100 mt-3" type="submit" value="Logout"/>
+        <button class="btn btn-primary w-100 btn-custom" type="submit">Search</button>
     </form>
 </div>
 

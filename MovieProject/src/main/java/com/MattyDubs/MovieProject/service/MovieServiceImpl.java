@@ -59,4 +59,9 @@ public class MovieServiceImpl implements MovieService {
     public List<Movie> findByTitleYearUser(String title, String year, CustomUser user){
         return movieDAO.findByTitleYearUser(title, year, user);
     }
+
+    @Override
+    public Movie singleFindByTitleYear(String title, String year){
+        return movieDAO.singleFindByTitleYear(title, year);
+    }
 }

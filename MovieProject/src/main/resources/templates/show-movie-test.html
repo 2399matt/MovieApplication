@@ -2,75 +2,81 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Movie Details</title>
-    <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-    >
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-          background-color: #f8f9fa;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          min-height: 100vh;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .btn-custom {
+            border-radius: 25px;
         }
         .card {
-          border-radius: 15px;
-          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
         .movie-poster {
-          border-top-left-radius: 15px;
-          border-bottom-left-radius: 15px;
-          object-fit: cover;
-          height: 100%;
-          max-width: 100%;
+            width: 100%;
+            object-fit: cover;
         }
         .card-body {
-          padding: 20px;
-        }
-        .movie-title {
-          font-weight: bold;
-          font-size: 1.5rem;
-        }
-        .movie-year {
-          color: #6c757d;
-          font-size: 1rem;
-          margin-bottom: 15px;
+            padding: 20px;
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="card flex-row mx-auto" style="max-width: 700px;">
-        <!-- Movie Poster -->
-        <div class="col-md-4">
-            <img
-                    alt="Movie Poster"
-                    class="movie-poster"
-                    th:src="${movie.imageURL}"
-            >
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light w-100">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Movie Tracker</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/movies/browse}">Browse Movies</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/movies/search}">Search</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/movies/list}">Movie List</a>
+                </li>
+                <li class="nav-item">
+                    <form action="#" method="POST" th:action="@{/logout}" class="d-inline">
+                        <input class="btn btn-info btn-custom" type="submit" value="Logout"/>
+                    </form>
+                </li>
+            </ul>
         </div>
-        <!-- Movie Details -->
-        <div class="col-md-8">
-            <div class="card-body">
-                <h5 class="movie-title" th:text="${movie.title}"></h5>
-                <p class="movie-year" th:text="${movie.year} + ' || ' + ${movie.rated}"></p>
-                <hr>
-                <p class="card-text">
-                    <strong>Director: <span th:text="${movie.director}"></span></strong> <br><br>
-                    <strong>Genre: <span th:text="${movie.genre}"></span></strong> <br><br>
-                    <strong>Plot: <span th:text="${movie.plot}"></span></strong> <br><br>
-                    <strong>Actors: <span th:text="${movie.actors}"></span></strong> <br><br>
-                    <strong>Rating: <span th:text="${movie.score} +'/10'"></span></strong> <br>
-                </p>
-                <a class="btn btn-info" target="_blank" th:href="${movie.imdbURL}+${movie.imdbId}+'/'">Watch Trailer</a>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="card mx-auto" style="max-width: 800px;">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img th:src="${movie.imageURL}" class="movie-poster" alt="Movie Poster">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="movie-title" th:text="${movie.title}"></h5>
+                    <p class="text-muted" th:text="${movie.year} + ' | ' + ${movie.rated}"></p>
+                    <p><strong>Director:</strong> <span th:text="${movie.director}"></span></p>
+                    <p><strong>Genre:</strong> <span th:text="${movie.genre}"></span></p>
+                    <p><strong>Plot:</strong> <span th:text="${movie.plot}"></span></p>
+                    <p><strong>Actors:</strong> <span th:text="${movie.actors}"></span></p>
+                    <p><strong>Rating:</strong> <span th:text="${movie.score} +'/10'"></span></p>
+                    <a class="btn btn-info btn-custom" target="_blank" th:href="${movie.imdbURL}+${movie.imdbId}+'/'">Watch Trailer</a>
+                </div>
             </div>
         </div>
     </div>
-    <!-- Back to Search Page Link -->
-    <div class="text-center mt-3">
+    <div class="text-center mt-4">
         <form method="POST" th:action="@{/movies/save}" th:object="${movie}">
             <input th:field="*{id}" type="hidden"/>
             <input th:field="*{title}" type="hidden"/>
@@ -83,17 +89,7 @@
             <input th:field="*{imageURL}" type="hidden"/>
             <input th:field="*{director}" type="hidden"/>
             <input th:field="*{imdbId}" type="hidden"/>
-            <button class="btn btn-success" type="submit">Save Movie</button>
-        </form>
-        <div class="text-center mt-3">
-            <a class="btn btn-primary" th:href="@{/movies/search}">Back to Search Page</a>
-        </div>
-        <div class="text-center mt-3">
-            <a class="btn btn-secondary" th:href="@{/movies/list}">Back to List</a>
-        </div>
-        <br>
-        <form action="#" method="POST" th:action="@{/logout}">
-            <input class="btn btn-info" type="submit" value="Logout"/>
+            <button class="btn btn-success btn-custom" type="submit">Save Movie</button>
         </form>
     </div>
 </div>

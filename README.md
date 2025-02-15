@@ -1,3 +1,5 @@
+GOAL: To allow users to have a functional movie search engine / personal movie library.
+
 Movie application to allow users to search for, save, and remove movies from their own personal movie list
 
 OMDb API used to retrieve movie information.

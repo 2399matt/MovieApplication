@@ -2,11 +2,16 @@ package com.MattyDubs.MovieProject.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+
 import java.util.Objects;
 
+/**
+ * Entity class similar to the movie entity. Top movie entity has no relationship to users.
+ * Made to store the top 250 imdb movies for the browse section of the application.
+ */
 @Entity
-@Table(name="top_movies")
-public class TopMovieModel{
+@Table(name = "top_movies")
+public class TopMovieModel {
 
     // Separate movie entity for the top 250 movies table.
     // This is to avoid conflicts with the movie entity used for the user's saved movies.
@@ -57,14 +62,12 @@ public class TopMovieModel{
     private String director;
 
 
-
-
     public TopMovieModel() {
 
     }
 
     public TopMovieModel(String title, String year, String rated, String genre, String actors, String plot,
-                 String score, String imageURL, String imdbId, String director, String imdbURL, String type) {
+                         String score, String imageURL, String imdbId, String director, String imdbURL, String type) {
         this.title = title;
         this.year = year;
         this.rated = rated;

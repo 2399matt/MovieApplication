@@ -7,14 +7,15 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * WebUser class is the users class for the default JDBC-Spring-Security setup.
+ * Maps to the authorities table for authentication.
+ * NOTE: This user class has NO relationship to movies. Strictly for authentication.
+ */
 @Entity
 @Table(name = "users")
 public class WebUser {
 
-    /**
-     * WebUser class is the users class for the default JDBC-Spring-Security setup.
-     * Maps to the authorities table for authentication.
-     */
     @Id
     @NotNull
     @NotEmpty

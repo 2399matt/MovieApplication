@@ -8,7 +8,7 @@ import java.util.List;
 public interface MovieService {
     void save(Movie movie, CustomUser user);
 
-    void deleteMovie(Movie movie);
+    void deleteMovie(int id);
 
     Movie findById(int id);
 
@@ -21,4 +21,8 @@ public interface MovieService {
     List<Movie> findByTitleYearUser(String title, String year, CustomUser user);
 
     Movie singleFindByTitleYear(String title, String year);
+
+    List<Movie> saveMovieForUser(CustomUser user, Movie movie);
+
+    void updateMovie(Movie movie);
 }

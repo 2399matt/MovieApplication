@@ -1,6 +1,5 @@
 package com.MattyDubs.MovieProject.controller;
 
-import com.MattyDubs.MovieProject.dao.TopMoviesRepo;
 import com.MattyDubs.MovieProject.data.TopMovieModel;
 import com.MattyDubs.MovieProject.data.TopMovies;
 import com.MattyDubs.MovieProject.entity.CustomUser;
@@ -8,18 +7,21 @@ import com.MattyDubs.MovieProject.entity.Movie;
 import com.MattyDubs.MovieProject.entity.MovieListContainer;
 import com.MattyDubs.MovieProject.entity.MovieSearch;
 import com.MattyDubs.MovieProject.service.MovieAPIService;
+import com.MattyDubs.MovieProject.service.MovieCheckService;
 import com.MattyDubs.MovieProject.service.MovieService;
 import com.MattyDubs.MovieProject.service.UserService;
-import com.MattyDubs.MovieProject.util.MovieUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * MovieController class in charge of handling all movie-related endpoints.
+ */
 @Controller
 @RequestMapping("/movies")
 public class MovieController {
@@ -28,73 +30,70 @@ public class MovieController {
     private final MovieAPIService movieAPIService;
     private final UserService userService;
     private final TopMovies topMovies;
-    private final TopMoviesRepo topMoviesRepo;
-    private final MovieUtil movieUtil;
+    private final MovieCheckService movieCheckService;
 
     @Autowired
     public MovieController(MovieService movieService, MovieAPIService movieAPIService, UserService userService,
-                           TopMovies topMovies, TopMoviesRepo topMoviesRepo, MovieUtil movieUtil) {
+                           TopMovies topMovies, MovieCheckService movieCheckService) {
         this.movieService = movieService;
         this.movieAPIService = movieAPIService;
         this.userService = userService;
         this.topMovies = topMovies;
-        this.topMoviesRepo = topMoviesRepo;
-        this.movieUtil = movieUtil;
+        this.movieCheckService = movieCheckService;
     }
 
     /**
-     * Search endpoint, returns our search HTML page where the user can create the MovieSearch object
-     * with the title/year of the desired movie.
+     * Search endpoint, returns our search form HTML fragment to be placed on the homepage
+     * Adds a MovieSearch object to the model for holding user input
      *
      * @param model The model that the controller uses to talk to the webpage.
      * @return the search movies page.
      */
-    @GetMapping("/search")
-    public String searchForm(Model model) {
+    @GetMapping("/searchMovies")
+    public String searchInsert(Model model) {
         model.addAttribute("movieInfo", new MovieSearch());
+        return "/fragments/search-frag :: search-frag";
+    }
+
+    /**
+     * homePage method used to return the homepage of the application.
+     * Only method in the controller that returns a FULL view.
+     *
+     * @return The HTML document for our homepage.
+     */
+    @GetMapping("/home")
+    public String homePage() {
         return "search-movies-test";
     }
 
     /**
      * List endpoint, used to list all the movies that the logged-in user has saved.
+     * Calls on UserService to fetch the user and the users movies with the Principal obj.
      *
      * @param model The model.
-     * @return the list-webpage that holds all the user's saved movies.
+     * @return The HTML fragment for the users personal movie-list page.
      */
     @GetMapping("/list")
     public String listMovies(Model model, Principal principal) {
-        //CustomUser user = userService.findByUsername(principal.getName());
-
         CustomUser user = userService.findUserAndMovies(principal.getName());
         model.addAttribute("movies", user.getMovies());
-
-        // List<Movie> movies = movieService.findAllByUser(user);
-        // model.addAttribute("movies", movies);
-        return "movie-list";
+        return "/fragments/personal-list :: movie-list";
     }
 
     /**
-     * Post-handling for saving a movie to the DB. We use Authentication to get the current user's username.
-     * Need to create the CustomUser so that the movie-user relationship is maintained.
+     * SaveMovie endpoint used to save a movie to the users movie-list.
+     * Calls on UserService to find the current user with Principal and fetch the movie list.
+     * Calls movieService to check if the user already saved the movie, if not, it will handle the save.
      *
      * @param movie The movie to be saved, requested from the model
-     * @return The user back to the list, with the new movie added.
+     * @return The HTML fragment for the users personal movie-list page.
      */
     @PostMapping("/save")
-    public String saveMovie(@ModelAttribute("movie") Movie movie, Principal principal) {
+    public String saveMovie(@ModelAttribute("movie") Movie movie, Principal principal, Model model) {
         CustomUser user = userService.findUserAndMovies(principal.getName());
-        Movie movieCheck = user.getMovies().stream()
-                .filter(n -> n.getTitle().equals(movie.getTitle()) && n.getYear().equals(movie.getYear()))
-                .findFirst()
-                .orElse(null);
-        if (movieCheck != null) {
-            return "redirect:/movies/list";
-        }
-        movie.setUser(user);
-        user.getMovies().add(movie); // Not really necessary, just for memory storage of movies.
-        movieService.save(movie, user);
-        userService.save(user);
-        return "redirect:/movies/list";
+        movieService.saveMovieForUser(user, movie);
+        model.addAttribute("movies", user.getMovies());
+        return "/fragments/personal-list :: movie-list";
     }
 
     /**
@@ -104,25 +103,26 @@ public class MovieController {
      * @return the user back to the list, with the deleted movie gone.
      */
     @GetMapping("/deleteMovie")
-    public String deleteMovie(@RequestParam("id") int id) {
-        Movie movieToRemove = movieService.findById(id);
-        if (movieToRemove != null)
-            movieService.deleteMovie(movieToRemove);
-        return "redirect:/movies/list";
+    public String deleteMovie(@RequestParam("id") int id, Model model, Principal principal) {
+        movieService.deleteMovie(id);
+        CustomUser user = userService.findUserAndMovies(principal.getName());
+        model.addAttribute("movies", user.getMovies());
+        return "/fragments/personal-list :: movie-list";
     }
 
     /**
      * ShowMovie endpoint is reached after the user has searched for a movie. Takes in the MovieSearch object
      * that contains the title/year, and calls the API to retrieve a list of matching movie objects.
-     * Movies list is added to the model and the information is displayed on search list.
+     * Movies list is added to the model and the information is displayed in a card-style search result.
      *
      * @param movieSearch The MovieSearch object that holds the title/year of the movie.
+     * @param type        The type of search (movie, series).
      * @param model       The model.
-     * @return webpage to display the movie information.
+     * @return HTML fragment for the search results.
      */
     @PostMapping("/showMovie")
     public String showMovie(@ModelAttribute("movieInfo") MovieSearch movieSearch,
-                            Model model, @RequestParam("type") String type) {
+                            @RequestParam("type") String type, Model model) {
         MovieListContainer movieListContainer;
         if (!movieSearch.getYear().isBlank()) {
             movieListContainer = movieAPIService.getMovieByTitleAndYear(movieSearch.getTitle(), movieSearch.getYear(), type);
@@ -131,70 +131,106 @@ public class MovieController {
         }
         List<Movie> movies = movieListContainer.getMovies();
         model.addAttribute("movies", movies);
-        return "search-movie-list";
+        return "fragments/movie-lister :: movieResults";
     }
 
     /**
-     * Similar to the ShowMovie, however, this endpoint is accessed from the user's list. We request the params
-     * needed to make a movie search with the API.
+     * Similar to the ShowMovie, however, this endpoint is accessed from the user's list/browse page. We request the params
+     * needed to make search for the movie in our tables, and resort to the API if it is not found.
+     * Users will have the option to save the movie to their list from this page.
      *
      * @param title title of the movie
      * @param year  year that the movie was released
      * @param model the model
-     * @return show-movie webpage, display detailed info on a single movie.
+     * @return show-movie HTML fragment, used to display many details on a single movie.
      */
     @GetMapping("/showMovieDetails")
     public String showMovieDetails(@RequestParam("title") String title, @RequestParam("year") String year, Model model) {
-        TopMovieModel tm = topMoviesRepo.findByTitle(title);
-        if (tm != null) {
-            Movie movie = movieUtil.mapFromTopMovieModel(tm);
-            System.out.println("Movie found in top-movies DB!");
-            model.addAttribute("movie", movie);
-            return "show-movie-test";
-        } else {
-            Movie movie = movieService.singleFindByTitleYear(title, year);
-            if (movie != null) {
-                Movie newMovie = movieUtil.copyMovie(movie);
-                System.out.println("Movie found in movies DB!");
-                model.addAttribute("movie", newMovie);
-                return "show-movie-test";
-            } else {
-                movie = movieAPIService.getSingleMovie(title, year);
-                model.addAttribute("movie", movie);
-                System.out.println("Found with API!");
-                return "show-movie-test";
-            }
-        }
+        Movie movie = movieCheckService.checkMovieExistence(title, year);
+        model.addAttribute("movie", movie);
+        return "fragments/show-movie :: show-movie";
     }
 
+    /**
+     * Browse endpoint. Used to display a paginated, and filterable list of the top 250 imdb movies.
+     * Users have the option to show additional details for each movie in the list.
+     *
+     * @param genre The genre to be filtered by (not required).
+     * @param page  The page number, used for pagination (required, default value).
+     * @param model the model.
+     * @return HTML fragment for the browse page. Movies are placed in a table.
+     */
     @GetMapping("/browse")
     public String showTopMovies(@RequestParam(required = false, name = "genre") String genre, @RequestParam(defaultValue = "1") int page, Model model) {
-        System.out.println(genre);
-        List<TopMovieModel> allMovies = new ArrayList<>();
+        List<TopMovieModel> allMovies;
         if (genre == null) {
             allMovies = topMovies.getMovies();
         } else {
-            allMovies = topMovies.getMovies()
-                    .stream()
-                    .filter(n -> n.getGenre().toLowerCase().contains(genre))
-                    .toList();
+            allMovies = topMovies.getByGenre(genre);
         }
         int pageSize = 10;
         int totalMovies = allMovies.size();
         int totalPages = (int) Math.ceil((double) totalMovies / pageSize);
 
-        // Handle pagination logic
         int start = (page - 1) * pageSize;
         int end = Math.min(start + pageSize, totalMovies);
-
         List<TopMovieModel> moviesPage = allMovies.subList(start, end);
 
-        // Add the necessary attributes for the view
         model.addAttribute("movies", moviesPage);
         model.addAttribute("page", page);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("genre", genre);
-        return "browse-movies";
+        return "/fragments/browse-frag :: browse-frag";
+    }
+
+    /**
+     * updateForm endpoint that returns the form needed to update a movies watch status. The form will contain
+     * the title/year of the movie, as well as a status variable that holds true/false. POST request is sent to
+     * updateWatchedStatus
+     *
+     * @param title title of the movie.
+     * @param year  year the movie was released.
+     * @param model the model.
+     * @return HTML fragment for the update form. Will be placed where the button is in the table when clicked.
+     */
+    @GetMapping("/updateForm")
+    public String updateForm(@RequestParam("title") String title, @RequestParam("year") String year, Model model) {
+        model.addAttribute("title", title);
+        model.addAttribute("year", year);
+        return "/fragments/updateForm :: updateForm";
+    }
+
+    /**
+     * updateWatchedStatus takes in information from the updateForm to update a movies watched status for the user.
+     * Calls on userService to update the movie for the specific user.
+     *
+     * @param title     Title of the movie.
+     * @param year      Year the movie was released.
+     * @param status    The status chosen by the user (watched = true, not watched = false).
+     * @param principal Principal class to retrieve the username of the current logged-in user.
+     * @param model     the model.
+     * @return HTML fragment for the personal movie-list page. Watched status will be updated.
+     */
+    @PostMapping("/updateWatchedStatus")
+    public String updateWatchStatus(@RequestParam("title") String title, @RequestParam("year") String year,
+                                    @RequestParam("status") String status, Principal principal, Model model) {
+        System.out.println(status);
+        userService.updateMovieForUser(principal.getName(), title, year, status);
+        CustomUser user = userService.findUserAndMovies(principal.getName());
+        model.addAttribute("movies", user.getMovies());
+        return "/fragments/personal-list :: movie-list";
+    }
+
+    /**
+     * clear-search endpoint acts as a way to close div's on the page. HTMX is used to inject the empty DIV inside
+     * the DIV that they are currently in.
+     *
+     * @param model the model.
+     * @return HTML fragment that consists of an empty div element.
+     */
+    @GetMapping("/clear-search")
+    public String clearSearch(Model model) {
+        return "/fragments/empty :: empty";
     }
 
 }

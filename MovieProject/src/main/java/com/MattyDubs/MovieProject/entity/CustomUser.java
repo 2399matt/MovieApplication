@@ -4,14 +4,16 @@ import jakarta.persistence.*;
 
 import java.util.List;
 
+
+/**
+ * CustomUser entity, uses the webUser username to provide a corresponding customuser object.
+ * Mapped with the movie class to allow users to have their own personal list of movies.
+ *
+ */
 @Entity
 @Table(name = "customusers")
 public class CustomUser {
 
-    /**
-     * CustomUser class, used to hold users that are created with Spring Security.
-     * Mapped with the movie class to allow users to have their own personal list of movies
-     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

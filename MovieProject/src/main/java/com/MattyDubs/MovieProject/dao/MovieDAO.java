@@ -24,4 +24,6 @@ public interface MovieDAO {
 
     Movie singleFindByTitleYear(String title, String year);
 
+    void updateMovie(Movie movie);
+
 }

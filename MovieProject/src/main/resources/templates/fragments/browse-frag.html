@@ -1,0 +1,71 @@
+<div th:fragment="browse-frag" class="container table-container">
+  <button hx-get="/movies/clear-search"
+          hx-trigger="click"
+          hx-target="#movieResults"
+          hx-swap="innerHTML" class="btn-close" aria-label="Close"></button>
+  <h2 class="mb-4">Browse Movies</h2>
+  <form method="GET" action="#" th:action="@{/movies/browse}" hx-get="/movies/browse"
+        hx-target="#movieResults" hx-swap="innerHTML">
+    <input type="radio" name="genre" value="horror" th:checked="${genre} == 'horror'"> Horror
+    <input type="radio" name="genre" value="fantasy" th:checked="${genre} == 'fantasy'"> Fantasy
+    <input type="radio" name="genre" value="drama" th:checked="${genre} == 'drama'"> Drama
+    <input type="radio" name="genre" value="crime" th:checked="${genre} == 'crime'"> Crime
+    <input type="radio" name="genre" value="thriller" th:checked="${genre} == 'thriller'"> Thriller
+    <input type="radio" name="genre" value="action" th:checked="${genre} == 'action'"> Action
+    <input type="radio" name="genre" value="adventure" th:checked="${genre} == 'adventure'"> Adventure
+    <input type="radio" name="genre" value=""> Clear Filter
+    <button type="submit" class="btn btn-primary">Set Filters</button>
+  </form>
+  <div class="table-responsive">
+  <table class="table table-hover table-striped">
+    <thead class="table-dark">
+    <tr>
+      <th>Poster</th>
+      <th>Movie Title</th>
+      <th>Genre</th>
+      <th>Rating</th>
+      <th>Release Date</th>
+      <th>Details</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="movie : ${movies}">
+      <td><img th:src="${movie.imageURL}" class="movie-poster" alt="Movie Poster"></td>
+      <td th:text="${movie.title}"></td>
+      <td th:text="${movie.genre}"></td>
+      <td th:text="${movie.score}"></td>
+      <td th:text="${movie.year}"></td>
+      <td>
+        <button th:hx-get="@{/movies/showMovieDetails(title=${movie.title}, year=${movie.year})}"
+                hx-target="#show-movie"
+                hx-swap="innerHTML"
+                onclick="scrollToMovieDetails()"
+                class="btn btn-dark btn-sm btn-custom">DetailsTEST</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+  <!-- Pagination -->
+  <div class="pagination mt-4">
+    <ul class="pagination">
+      <li class="page-item" th:classappend="${page == 1} ? 'disabled'">
+        <a class="page-link" href="#" th:hx-get="@{/movies/browse(genre=${genre}, page=1)}" hx-target="#movieResults" hx-swap="innerHTML">First</a>
+      </li>
+      <li class="page-item" th:classappend="${page == 1} ? 'disabled'">
+        <a class="page-link" href="#" th:hx-get="@{/movies/browse(genre=${genre}, page=${page - 1})}"hx-target="#movieResults" hx-swap="innerHTML">Prev</a>
+      </li>
+      <li class="page-item" th:classappend="${page == totalPages} ? 'disabled'">
+        <a class="page-link" href="#" th:hx-get="@{/movies/browse(genre=${genre}, page=${page + 1})}" hx-target="#movieResults" hx-swap="innerHTML">Next</a>
+      </li>
+      <li class="page-item" th:classappend="${page == totalPages} ? 'disabled'">
+        <a class="page-link" href="#" th:hx-get="@{/movies/browse(genre=${genre}, page=${totalPages})}"hx-target="#movieResults" hx-swap="innerHTML">Last</a>
+      </li>
+    </ul>
+  </div>
+  <script>
+    function scrollToMovieDetails() {
+        document.getElementById("show-movie").scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+</div>

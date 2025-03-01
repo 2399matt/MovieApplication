@@ -8,15 +8,14 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import javax.sql.DataSource;
 
+/**
+ * Spring-Security configuration. Configs for endpoint access along with the custom login-page,
+ * landing page, and logout function.
+ * Configures the JDBC user details manager to handle authentication in our DB.
+ */
 @Configuration
 public class SecurityConfig {
 
-    /**
-     * Spring-Security configuration. Configs for endpoint access along with the custom login-page,
-     * landing page, and logout function.
-     * @param dataSource The database tables for Spring-Security to use.
-     * @return JDBC user detail manager.
-     */
     @Bean
     public JdbcUserDetailsManager jdbcUserDetailsManager(DataSource dataSource) {
         return new JdbcUserDetailsManager(dataSource);
@@ -32,7 +31,7 @@ public class SecurityConfig {
                                 .authenticated()
                 )
                 .formLogin(login ->
-                        login.defaultSuccessUrl("/movies/search", true)
+                        login.defaultSuccessUrl("/movies/home", true)
                                 .loginPage("/register/login")
                                 .loginProcessingUrl("/authenticateUser")
                                 .permitAll()

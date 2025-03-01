@@ -71,12 +71,13 @@
     <form method="GET" action="#" th:action="@{/movies/browse}">
         <input type="radio" name="genre" value="horror" th:checked="${genre} == 'horror'"> Horror
         <input type="radio" name="genre" value="fantasy"th:checked="${genre} == 'fantasy'"> Fantasy
-        <input type="radio" name="genre" value="drama"th:checked="${genre} == 'drama'"> Drama
-        <input type="radio" name="genre" value="crime"th:checked="${genre} == 'crime'"> Crime
-        <input type="radio" name="genre" value="thriller"th:checked="${genre} == 'thriller'"> Thriller
-        <input type="radio" name="genre" value="action"th:checked="${genre} == 'action'"> Action
+        <input type="radio" name="genre" value="drama" th:checked="${genre} == 'drama'"> Drama
+        <input type="radio" name="genre" value="crime" th:checked="${genre} == 'crime'"> Crime
+        <input type="radio" name="genre" value="thriller" th:checked="${genre} == 'thriller'"> Thriller
+        <input type="radio" name="genre" value="action" th:checked="${genre} == 'action'"> Action
+        <input type="radio" name="genre" value="adventure" th:checked="${genre} == 'adventure'"> Adventure
         <input type="radio" name="genre" value=""> Clear Filter
-        <button type="submit">Set Filters</button>
+        <button type="submit" class="btn btn-primary">Set Filters</button>
     </form>
     <table class="table table-hover table-striped">
         <thead class="table-dark">
@@ -97,7 +98,11 @@
             <td th:text="${movie.score}"></td>
             <td th:text="${movie.year}"></td>
             <td>
-                <a class="btn btn-dark btn-sm" th:href="@{/movies/showMovieDetails(title=${movie.title}, year=${movie.year})}">Details</a>
+                <form method="GET" th:action="@{/movies/showMovieDetails}" hx-get="/movies/showMovieDetails" hx-target="#movieResults" hx-swap="innerHTML">
+                    <input type="hidden" th:value="${movie.title}" name="title"/>
+                    <input type="hidden" th:value="${movie.year}" name="year"/>
+                    <button class="btn btn-dark btn-sm btn-custom" type="submit">Details</button>
+                </form>
             </td>
         </tr>
         </tbody>

@@ -1,10 +1,8 @@
 package com.MattyDubs.MovieProject.service;
 
-import com.MattyDubs.MovieProject.entity.CustomUser;
 import com.MattyDubs.MovieProject.entity.Movie;
 import com.MattyDubs.MovieProject.entity.MovieListContainer;
-
-import java.util.List;
+import reactor.core.publisher.Mono;
 
 public interface MovieAPIService {
 

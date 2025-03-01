@@ -1,0 +1,34 @@
+<div th:fragment="movieResults" id="movie-results" class="container">
+  <div th:if="${movies != null and movies.size() > 0}">
+    <div class="row g-4">
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3" th:each="movie : ${movies}">
+        <div class="card h-100 shadow-sm">
+          <img th:src="${movie.imageURL}" class="card-img-top" alt="Movie Poster" />
+          <div class="card-body">
+            <h5 class="card-title" th:text="${movie.title}"></h5>
+            <p class="card-text">
+              <strong>Year:</strong> <span th:text="${movie.year}"></span><br>
+              <strong>Type:</strong> <span th:text="${movie.type}"></span>
+            </p>
+          </div>
+          <div class="card-footer text-center">
+            <button th:hx-get="@{/movies/showMovieDetails(title=${movie.title}, year=${movie.year})}"
+                    hx-target="#show-movie"
+                    hx-swap="innerHTML"
+                    class="btn btn-dark btn-sm btn-custom" type="button"
+                    onclick="scrollToMovieDetails()">DetailsTEST</button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:if="${movies == null or movies.size() == 0}" class="text-center">
+    <p class="text-muted">No movies found. Try searching again!</p>
+  </div>
+  <script>
+    function scrollToMovieDetails() {
+        document.getElementById("show-movie").scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+</div>

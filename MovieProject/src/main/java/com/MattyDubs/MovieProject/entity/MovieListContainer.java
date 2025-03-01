@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
+/**
+ * Container class for a list of movies retrieved by the API.
+ * Used to map the JSON response from the API to a list of Movie objects.
+ */
 public class MovieListContainer {
 
     @JsonProperty("Search")

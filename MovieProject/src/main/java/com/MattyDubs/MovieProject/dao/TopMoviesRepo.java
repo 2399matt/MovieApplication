@@ -5,6 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
+/**
+ * TopMoviesRepo uses the JPARepository to interact with the top-movies table. NOTE: the top-movies have
+ * NO relationship to customUsers.
+ */
 public interface TopMoviesRepo extends JpaRepository<TopMovieModel, Integer> {
 
     TopMovieModel findByTitle(String title);

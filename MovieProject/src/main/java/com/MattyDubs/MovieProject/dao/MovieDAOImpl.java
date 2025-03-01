@@ -9,13 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * MovieDAO class used to interact with the movie table in our DB.
+ * basic methods for saving, removing, and finding movies based on different needs.
+ * MovieDAO will be used in MovieService, which will be sent to the controller.
+ */
 @Repository
 public class MovieDAOImpl implements MovieDAO {
 
-    /**
-     * MovieDAO class used to interact with the movie table in our DB.
-     * basic methods for saving, removing, and finding movies based on different needs.
-     */
     private final EntityManager entityManager;
 
     @Autowired
@@ -44,6 +45,11 @@ public class MovieDAOImpl implements MovieDAO {
     }
 
     @Override
+    public void updateMovie(Movie movie) {
+        entityManager.merge(movie);
+    }
+
+    @Override
     public List<Movie> findByTitleYear(String title, String year) {
         return entityManager.createQuery("SELECT m FROM Movie m WHERE m.title=:title AND m.year=:year", Movie.class)
                 .setParameter("title", title)
@@ -59,7 +65,6 @@ public class MovieDAOImpl implements MovieDAO {
         return entityManager.createQuery("SELECT m FROM Movie m WHERE m.user.id=:id", Movie.class)
                 .setParameter("id", user.getId())
                 .getResultList();
-
     }
 
     public List<Movie> findByTitleYearUser(String title, String year, CustomUser user) {
@@ -71,15 +76,10 @@ public class MovieDAOImpl implements MovieDAO {
     }
 
     public Movie singleFindByTitleYear(String title, String year) {
-        Movie movie = entityManager.createQuery("SELECT m FROM Movie m WHERE m.title = :title AND m.year=:year", Movie.class)
+        return entityManager.createQuery("SELECT m FROM Movie m WHERE m.title = :title AND m.year=:year", Movie.class)
                 .setParameter("title", title)
                 .setParameter("year", year)
                 .getResultList().stream().findFirst().orElse(null);
-        if (movie != null)
-            return movie;
-        else
-            throw new RuntimeException("Movie not found");
-
     }
 
 

@@ -1,0 +1,24 @@
+<div th:fragment="search-frag" id="search-frag" class="card">
+    <button hx-get="/movies/clear-search" hx-trigger="click" hx-target="#searchContainer" hx-swap="innerHTML" class="btn-close" aria-label="Close">
+    </button>
+    <h4 class="text-center mb-4">Movie Information</h4>
+    <form id="movieForm" method="POST" th:action="@{/movies/showMovie}" th:object="${movieInfo}">
+        <div class="mb-3">
+            <label class="form-label">Movie Title</label>
+            <input class="form-control" placeholder="Enter movie title" required th:field="*{title}" type="text">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Movie Year</label>
+            <input class="form-control" placeholder="Enter release year" th:field="*{year}" type="number">
+        </div>
+        <div class="mb-3">
+            <label class="form-check-label">
+                <input type="radio" name="type" value="movie" checked> Movie
+            </label>
+            <label class="form-check-label ms-3">
+                <input type="radio" name="type" value="series"> Series
+            </label>
+        </div>
+        <button hx-post="/movies/showMovie" hx-target="#movieResults" hx-swap="innerHTML" class="btn btn-primary w-100 btn-custom" type="submit">Search</button>
+    </form>
+</div>

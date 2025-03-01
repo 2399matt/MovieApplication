@@ -1,0 +1,51 @@
+<div th:fragment="movie-list" class="container table-container mt-4">
+    <h2 class="mb-4">Movie List</h2>
+    <div class="table-responsive">
+    <table class="table table-sm table-hover table-striped" >
+        <thead class="table-dark">
+        <tr>
+            <th>Poster</th>
+            <th>Title</th>
+            <th>Year</th>
+            <th>Genre</th>
+            <th>Rating</th>
+            <th>Actions</th>
+            <th>Watched</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="movie : ${movies}">
+            <td><img th:src="${movie.imageURL}" alt="Movie Poster" class="movie-poster"></td>
+            <td th:text="${movie.title}" style="word-wrap: break-word; white-space: normal;"></td>
+            <td th:text="${movie.year}" style="word-wrap: break-word;"></td>
+            <td th:text="${movie.genre}" style="word-wrap: break-word;"></td>
+            <td th:text="${movie.rated}" style="word-wrap: break-word;"></td>
+            <td>
+                <a class="btn btn-dark btn-sm btn-custom"
+                   hx-swap="innerHTML"
+                   hx-target="#show-movie"
+                   th:hx-get="@{/movies/showMovieDetails(title=${movie.title}, year=${movie.year})}"
+                   onclick="scrollToMovieDetails()">Details</a>
+                <a class="btn btn-danger btn-sm btn-custom"
+                    th:hx-get="@{/movies/deleteMovie(id=${movie.id})}"
+                    hx-target="#movieResults"
+                    hx-swap="innerHTML">Remove</a>
+                <div th:id="'watchButton'+${movie.id}">
+                <a class="btn btn-sm btn-secondary"
+                   hx:get="@{/movies/updateForm(title = ${movie.title}, year =${movie.year})}"
+                   th:hx-target=" '#watchButton'+ ${movie.id}"
+                   hx-swap="innerHTML">Update</a>
+                </div>
+            </td>
+            <td th:if="${movie.watched} == false">&#x274c</td>
+            <td th:if="${movie.watched} == true">&#10004;</td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+    <script>
+        function scrollToMovieDetails() {
+            document.getElementById("show-movie").scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</div>

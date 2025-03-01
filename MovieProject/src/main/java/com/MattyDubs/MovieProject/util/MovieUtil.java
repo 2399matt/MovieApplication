@@ -5,6 +5,9 @@ import com.MattyDubs.MovieProject.data.TopMovieModel;
 import com.MattyDubs.MovieProject.entity.Movie;
 import org.springframework.stereotype.Component;
 
+/**
+ * Movie helper class used by the MovieController.
+ */
 @Component
 public class MovieUtil {
 
@@ -12,6 +15,14 @@ public class MovieUtil {
 
     }
 
+    /**
+     * copyMovie method is used to copy the fields of one movie to a new movie object. This is used for when we
+     * check our tables for the existence of a movie. If it is found, we copy that movie over (except for the attached
+     * id) to a new object, which will allow the user to save that movie.
+     *
+     * @param movie The movie object to be copied.
+     * @return A new movie object with the same fields as the original movie.
+     */
     public Movie copyMovie(Movie movie) {
         Movie newMovie = new Movie();
         newMovie.setUser(movie.getUser());
@@ -28,6 +39,13 @@ public class MovieUtil {
         return newMovie;
     }
 
+    /**
+     * mapFromTopMovieModel method is used to map the fields of a top-movie to a new movie object. This is used for if
+     * the movie exists in the top-movie list.
+     *
+     * @param tm The top-movie to be copied.
+     * @return A new movie object with the same fields as the top-movie.
+     */
     public Movie mapFromTopMovieModel(TopMovieModel tm) {
         Movie movie = new Movie();
         movie.setYear(tm.getYear());
@@ -42,4 +60,5 @@ public class MovieUtil {
         movie.setImageURL(tm.getImageURL());
         return movie;
     }
+
 }

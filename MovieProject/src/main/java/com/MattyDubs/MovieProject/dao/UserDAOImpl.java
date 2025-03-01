@@ -6,13 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * userDAO class for interacting with the DB. This is for CustomUsers, not for Spring-Security users.
+ * Basic DB methods for finding/saving the user. Custom queries for finding a user and fetching their movies.
+ * userDAO will be used by the UserService class in the service layer.
+ */
 @Repository
 public class UserDAOImpl implements UserDAO {
 
-    /**
-     * userDAO class for interacting with the DB. This is for CustomUsers, not for Spring-Security.
-     * Basic DB methods for finding/saving the user.
-     */
     private final EntityManager entityManager;
 
     @Autowired
@@ -28,7 +29,6 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public CustomUser findByUsername(String username) {
-        // TODO: Switch to optional.
         CustomUser user = entityManager.createQuery("SELECT u FROM CustomUser u WHERE u.username=:username", CustomUser.class)
                 .setParameter("username", username)
                 .getSingleResult();
@@ -37,7 +37,7 @@ public class UserDAOImpl implements UserDAO {
         return user;
     }
 
-    public CustomUser findUserAndMovies(String username){
+    public CustomUser findUserAndMovies(String username) {
 
         // JOIN FETCH used here to reduce the number of queries to the DB.
         // Will return the user and all of their associated movies in one query for the list endpoint.

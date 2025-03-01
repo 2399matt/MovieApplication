@@ -5,15 +5,16 @@ import jakarta.persistence.*;
 
 import java.util.Objects;
 
+
+/**
+ * Movie entity class used to interact with the movie table in the DB.
+ * Contains a CustomUser field for the many-to-one relationship.
+ * Class is also used for the API call to map the JSON info to our POJO.
+ */
 @Entity
 @Table(name = "movie")
 public class Movie {
 
-    /**
-     * Movie entity class used to interact with the movie table in the DB.
-     * Contains a CustomUser field for the many-to-one relationship.
-     * Class is also used for the API call to map the JSON info to our POJO.
-     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -59,6 +60,9 @@ public class Movie {
     @Column(name = "director")
     private String director;
 
+    @Column(name = "watched", columnDefinition = "boolean default false")
+    private boolean watched;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private CustomUser user;
@@ -84,6 +88,14 @@ public class Movie {
         this.imageURL = imageURL;
         this.imdbId = imdbId;
         this.director = director;
+    }
+
+    public boolean getWatched() {
+        return this.watched;
+    }
+
+    public void setWatched(Boolean bool) {
+        this.watched = bool;
     }
 
     public String getType() {
@@ -221,18 +233,4 @@ public class Movie {
         return Objects.hash(id, title, year, rated, genre, actors, plot, score, imageURL, imdbId, director, user);
     }
 
-    public Movie copyMovie(Movie movie){
-        this.title = movie.getTitle();
-        this.year = movie.getYear();
-        this.rated = movie.getRated();
-        this.genre = movie.getGenre();
-        this.actors = movie.getActors();
-        this.plot = movie.getPlot();
-        this.score = movie.getScore();
-        this.imageURL = movie.getImageURL();
-        this.imdbId = movie.getImdbId();
-        this.director = movie.getDirector();
-        this.user = movie.getUser();
-        return this;
-    }
 }

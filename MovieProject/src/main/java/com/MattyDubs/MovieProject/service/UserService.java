@@ -9,4 +9,6 @@ public interface UserService {
     CustomUser findByUsername(String username);
 
     CustomUser findUserAndMovies(String username);
+
+    void updateMovieForUser(String username, String title, String year, String status);
 }

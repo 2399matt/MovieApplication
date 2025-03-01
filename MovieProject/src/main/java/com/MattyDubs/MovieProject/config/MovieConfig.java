@@ -4,9 +4,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
+/**
+ * Config class used for interacting with external API.
+ * WebClient methods that are used to call the OMDB API for the movie information.
+ * Builders for a list of movies by title/year, or a single movie by title/year.
+ * Single movie call provides more information on the movie.
+ */
 @Configuration
 public class MovieConfig {
 
@@ -19,22 +23,16 @@ public class MovieConfig {
 
     }
 
-    /**
-     * WebClient that is used to call the OMDB API for the movie information.
-     * @param title title of the movie
-     * @param year year that the movie was released
-     * @return The ready-to-build WebClient that houses the URL for the API call
-     */
     public WebClient.Builder webClientBuilder(String title, String year, String type) {
-        return WebClient.builder().baseUrl(movieURL + movieKey + "&s=" + title + "&y=" + year+"&type="+type);
+        return WebClient.builder().baseUrl(movieURL + movieKey + "&s=" + title + "&y=" + year + "&type=" + type);
     }
 
     public WebClient.Builder webClientBuilder(String title, String type) {
-        return WebClient.builder().baseUrl(movieURL + movieKey + "&s=" + title+"&type=" + type);
+        return WebClient.builder().baseUrl(movieURL + movieKey + "&s=" + title + "&type=" + type);
 
     }
 
-    public WebClient.Builder getSingleMovie(String title, String year){
+    public WebClient.Builder getSingleMovie(String title, String year) {
         return WebClient.builder().baseUrl(movieURL + movieKey + "&t=" + title + "&y=" + year);
 
     }

@@ -1,0 +1,42 @@
+<div id="show-movie" th:fragment="show-movie">
+    <div class="card mx-auto" style="max-width: 800px;">
+        <button hx-get="/movies/clear-search" hx-trigger="click" hx-target="#show-movie" hx-swap="innerHTML" class="btn-close" aria-label="Close">
+        </button>
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img th:src="${movie.imageURL}" class="movie-poster" alt="Movie Poster">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="movie-title" th:text="${movie.title}"></h5>
+                    <p class="text-muted" th:text="${movie.year} + ' | ' + ${movie.rated}"></p>
+                    <p><strong>Director:</strong> <span th:text="${movie.director}"></span></p>
+                    <p><strong>Genre:</strong> <span th:text="${movie.genre}"></span></p>
+                    <p><strong>Plot:</strong> <span th:text="${movie.plot}"></span></p>
+                    <p><strong>Actors:</strong> <span th:text="${movie.actors}"></span></p>
+                    <p><strong>Rating:</strong> <span th:text="${movie.score} +'/10'"></span></p>
+                    <a class="btn btn-info btn-custom" target="_blank" th:href="${movie.imdbURL}+${movie.imdbId}+'/'">Watch Trailer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-center mt-4">
+        <form method="POST"  th:action="@{/movies/save}" th:object="${movie}">
+            <input th:field="*{id}" type="hidden"/>
+            <input th:field="*{title}" type="hidden"/>
+            <input th:field="*{year}" type="hidden"/>
+            <input th:field="*{rated}" type="hidden"/>
+            <input th:field="*{genre}" type="hidden"/>
+            <input th:field="*{actors}" type="hidden"/>
+            <input th:field="*{plot}" type="hidden"/>
+            <input th:field="*{score}" type="hidden"/>
+            <input th:field="*{imageURL}" type="hidden"/>
+            <input th:field="*{director}" type="hidden"/>
+            <input th:field="*{imdbId}" type="hidden"/>
+            <button hx-post="/movies/save"
+                    hx-swap="innerHTML"
+                    hx-target="#movieResults"
+                    class="btn btn-success btn-custom" type="submit">Save Movie</button>
+        </form>
+    </div>
+</div>

@@ -15,21 +15,30 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * Registration controller responsible for endpoints related to authentication and the creation of new users.
+ * Injects a password encoder, our user details manager, and a user service object for handling user creation.
+ */
 @Controller
 @RequestMapping("/register")
 public class RegistrationController {
 
-    @Autowired
-    private PasswordEncoder encoder;
+    private final PasswordEncoder encoder;
+
+    private final JdbcUserDetailsManager jdbcUserDetailsManager;
+
+    private final UserService userService;
 
     @Autowired
-    private JdbcUserDetailsManager jdbcUserDetailsManager;
-
-    @Autowired
-    private UserService userService;
+    public RegistrationController(PasswordEncoder encoder, JdbcUserDetailsManager jdbcUserDetailsManager, UserService userService) {
+        this.encoder = encoder;
+        this.jdbcUserDetailsManager = jdbcUserDetailsManager;
+        this.userService = userService;
+    }
 
     /**
-     * Mapping for the registration form.
+     * Mapping for the registration form. Adds a webUser object to the model, which the form will pass to
+     * the AddUser method to create a customUser and Spring Security user.
      *
      * @param model The model that the controller uses to pass information to the webpage.
      * @return the registration form for new users.
@@ -52,9 +61,9 @@ public class RegistrationController {
 
     /**
      * Post-handling for adding a new user. We create the customUser from the model attribute that holds the
-     * WebUser object. Then we add the user to Spring-Security using the UserDetails manager.
+     * WebUser object. Then we build a UserDetails object for Spring Security to use.
      *
-     * @param webUser The user object needed for our Spring-Security setup.
+     * @param webUser The user entity needed for our Spring-Security setup.
      * @return the login form, so that the new user can log in.
      */
     @PostMapping("/addUser")

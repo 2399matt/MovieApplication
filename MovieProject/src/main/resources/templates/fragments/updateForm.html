@@ -1,0 +1,18 @@
+<div th:fragment="updateForm">
+    <form method="POST" th:action="@{/movies/updateWatchedStatus}"
+          hx-post="/movies/updateWatchedStatus"
+          hx-target="#movieResults"
+          hx-swap="innerHTML"
+          class="flex items-center space-x-3 p-2 border rounded-lg shadow-sm bg-gray-100">
+        <select name="status" class="px-2 py-1 border rounded-lg focus:ring focus:ring-blue-300">
+            <option value="true">Watched</option>
+            <option value="false">Not Watched</option>
+        </select>
+        <input type="hidden" name="title" th:value="${title}">
+        <input type="hidden" name="year" th:value="${year}">
+        <button type="submit"
+                class="btn btn-sm btn btn-dark">
+            Update
+        </button>
+    </form>
+</div>

@@ -9,10 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-/**
- * MovieService class uses the MovieDAO implementation to interact with the DB and hold the basic business logic for
- * the movie entity. This class is part of the service layer to be used by the controller.
- */
+
 @Service
 public class MovieServiceImpl implements MovieService {
 
@@ -67,6 +64,7 @@ public class MovieServiceImpl implements MovieService {
         return movieDAO.singleFindByTitleYear(title, year);
     }
 
+    @Override
     public List<Movie> saveMovieForUser(CustomUser user, Movie movie) {
         Movie check = user.getMovies().stream()
                 .filter(m -> m.getTitle().equals(movie.getTitle()) && m.getYear().equals(movie.getYear()))

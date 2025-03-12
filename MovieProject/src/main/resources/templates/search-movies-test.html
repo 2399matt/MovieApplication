@@ -28,6 +28,9 @@
                     <a class="nav-link" href="#" hx-target="#movieResults" hx-swap="innerHTML" th:hx-get="@{/movies/list}">Movie List</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="#" th:href="@{/forum/home}">Forums</a>
+                </li>
+                <li class="nav-item">
                     <form action="#" method="POST" th:action="@{/logout}" class="d-inline">
                         <input class="btn btn-info btn-custom" type="submit" value="Logout"/>
                     </form>
@@ -38,7 +41,6 @@
 </nav>
 
 <!-- Movie Search Form -->
-
     <div id="searchContainer">
         <p class="text-center text-muted">Click "Search Movies" to start searching for films!</p>
         <!-- Optional spinner -->

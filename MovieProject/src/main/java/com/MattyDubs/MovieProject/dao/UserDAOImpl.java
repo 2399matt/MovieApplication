@@ -6,11 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * userDAO class for interacting with the DB. This is for CustomUsers, not for Spring-Security users.
- * Basic DB methods for finding/saving the user. Custom queries for finding a user and fetching their movies.
- * userDAO will be used by the UserService class in the service layer.
- */
+import java.util.List;
+
+
 @Repository
 public class UserDAOImpl implements UserDAO {
 
@@ -47,5 +45,10 @@ public class UserDAOImpl implements UserDAO {
         return entityManager.createQuery("SELECT u FROM CustomUser u LEFT JOIN FETCH u.movies WHERE u.username=:username", CustomUser.class)
                 .setParameter("username", username)
                 .getSingleResult();
+    }
+
+    @Override
+    public List<CustomUser> findAll() {
+        return entityManager.createQuery("SELECT u FROM CustomUser u", CustomUser.class).getResultList();
     }
 }

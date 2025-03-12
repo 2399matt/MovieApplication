@@ -24,15 +24,15 @@
                 <a class="btn btn-dark btn-sm btn-custom"
                    hx-swap="innerHTML"
                    hx-target="#show-movie"
-                   th:hx-get="@{/movies/showMovieDetails(title=${movie.title}, year=${movie.year})}"
+                   th:hx-get="@{/movies/showMovieDetails(page=${page}, title=${movie.title}, year=${movie.year})}"
                    onclick="scrollToMovieDetails()">Details</a>
                 <a class="btn btn-danger btn-sm btn-custom"
-                    th:hx-get="@{/movies/deleteMovie(id=${movie.id})}"
+                    th:hx-get="@{/movies/deleteMovie(page = ${page}, id=${movie.id})}"
                     hx-target="#movieResults"
                     hx-swap="innerHTML">Remove</a>
                 <div th:id="'watchButton'+${movie.id}">
                 <a class="btn btn-sm btn-secondary"
-                   hx:get="@{/movies/updateForm(title = ${movie.title}, year =${movie.year})}"
+                   hx:get="@{/movies/updateForm(page = ${page}, title = ${movie.title}, year =${movie.year})}"
                    th:hx-target=" '#watchButton'+ ${movie.id}"
                    hx-swap="innerHTML">Update</a>
                 </div>
@@ -42,6 +42,22 @@
         </tr>
         </tbody>
     </table>
+    </div>
+    <div class="pagination mt-4">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${page == 1} ? 'disabled'">
+                <a class="page-link" href="#" th:hx-get="@{/movies/list(page=1)}" hx-target="#movieResults" hx-swap="innerHTML">First</a>
+            </li>
+            <li class="page-item" th:classappend="${page == 1} ? 'disabled'">
+                <a class="page-link" href="#" th:hx-get="@{/movies/list(page=${page - 1})}"hx-target="#movieResults" hx-swap="innerHTML">Prev</a>
+            </li>
+            <li class="page-item" th:classappend="${page == totalPages} ? 'disabled'">
+                <a class="page-link" href="#" th:hx-get="@{/movies/list(page=${page + 1})}" hx-target="#movieResults" hx-swap="innerHTML">Next</a>
+            </li>
+            <li class="page-item" th:classappend="${page == totalPages} ? 'disabled'">
+                <a class="page-link" href="#" th:hx-get="@{/movies/list(page=${totalPages})}"hx-target="#movieResults" hx-swap="innerHTML">Last</a>
+            </li>
+        </ul>
     </div>
     <script>
         function scrollToMovieDetails() {

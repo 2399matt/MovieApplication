@@ -9,11 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-/**
- * MovieDAO class used to interact with the movie table in our DB.
- * basic methods for saving, removing, and finding movies based on different needs.
- * MovieDAO will be used in MovieService, which will be sent to the controller.
- */
+
 @Repository
 public class MovieDAOImpl implements MovieDAO {
 
@@ -81,6 +77,5 @@ public class MovieDAOImpl implements MovieDAO {
                 .setParameter("year", year)
                 .getResultList().stream().findFirst().orElse(null);
     }
-
 
 }

@@ -6,11 +6,7 @@ import com.MattyDubs.MovieProject.entity.MovieListContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-/**
- * Service class that uses the MovieConfig class to interact with the OMDB API.
- * This class retrieves the webclient builders from the config class and builds them to send the request, and map
- * the results into our Movie / MovieList objects.
- */
+
 @Service
 public class MovieAPIServiceImpl implements MovieAPIService {
 
@@ -31,7 +27,7 @@ public class MovieAPIServiceImpl implements MovieAPIService {
         return movieConfig.webClientBuilder(title, type).build().get().retrieve().bodyToMono(MovieListContainer.class).block();
     }
 
-    public Movie getSingleMovie(String title, String year){
+    public Movie getSingleMovie(String title, String year) {
         return movieConfig.getSingleMovie(title, year).build().get().retrieve().bodyToMono(Movie.class).block();
     }
 }

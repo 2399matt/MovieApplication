@@ -1,0 +1,22 @@
+<div th:fragment="postForm" class="container mt-5">
+  <h2>Create a New Post</h2>
+  <form method="POST" th:action="@{/forum/savePost}" th:object="${post}">
+    <!-- Title Input -->
+    <div class="mb-3">
+      <label for="title" class="form-label">Post Title</label>
+      <input th:field="*{title}" type="text" class="form-control" id="title" name="title" required>
+    </div>
+
+    <!-- Content Textarea -->
+    <div class="mb-3">
+      <label for="content" class="form-label">Post Content</label>
+      <textarea th:field="*{content}" class="form-control" id="content" name="content" rows="5" required></textarea>
+    </div>
+    <input th:field="*{id}" type="hidden">
+    <input th:field="*{user}" type="hidden">
+    <input th:field="*{replies}" type="hidden">
+
+    <!-- Submit Button -->
+    <button hx-post="/forum/savePost" hx-target="#forumContainer" hx-swap="innerHTML">Submit</button>
+  </form>
+</div>

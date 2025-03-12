@@ -1,0 +1,14 @@
+<div th:fragment="replyForm" class="container mt-5">
+  <h2>Create a New Post</h2>
+  <form method="POST" th:action="@{/forum/saveReply}" th:object="${reply}">
+    <!-- Comment Textarea -->
+    <div class="mb-3">
+      <label for="content" class="form-label">Post Content</label>
+      <textarea th:field="*{comment}" class="form-control" id="content" name="content" rows="5" required></textarea>
+    </div>
+    <input th:field="*{id}" type="hidden">
+    <input name="postId" th:value="${postId}" type="hidden">
+    <!-- Submit Button -->
+    <button hx-post="/forum/saveReply" hx-target="#forumContainer" hx-swap="innerHTML">Submit</button>
+  </form>
+</div>

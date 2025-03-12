@@ -6,6 +6,11 @@ import com.MattyDubs.MovieProject.entity.Movie;
 
 import java.util.List;
 
+/**
+ * MovieDAO class used to interact with the movie table in our DB.
+ * basic methods for saving, removing, and finding movies based on different needs.
+ * MovieDAO will be used in MovieService, which will be sent to the controller.
+ */
 public interface MovieDAO {
 
     void save(Movie movie, CustomUser user);

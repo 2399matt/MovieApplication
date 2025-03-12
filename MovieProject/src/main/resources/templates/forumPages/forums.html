@@ -1,0 +1,10 @@
+<div th:fragment="forumFrag">
+<button class="btn btn-md btn-dark" th:hx-get="@{/forum/postForm}" hx-swap="innerHTML" hx-target="#forumContainer">Create a New Post</button>
+<ul class="list-group">
+    <li th:each="entry : ${forums}" class="list-group-item d-flex justify-content-between align-items-center">
+        <a th:text="${entry.title}" hx:get="@{/forum/viewPost(id=${entry.id})}" hx-target="#forumContainer" hx-swap="innerHTML"></a>
+        <span th:if="entry.replies != null" class="badge badge-dark badge-pill" style="color: #fff; background-color: #007bff;" th:text="${entry.replies.size()}"></span>
+        <span th:if="entry.replies == null" class="badge badge-dark badge-pill" style="color: #fff; background-color: #007bff;">0</span>
+    </li>
+</ul>
+</div>

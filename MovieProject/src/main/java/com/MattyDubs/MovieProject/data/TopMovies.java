@@ -25,7 +25,7 @@ public class TopMovies {
 
     /**
      * Loads the top 250 movies from the database on application start-up.
-     * To be called in the controller.
+     * To be utilized in the controller.
      */
     @PostConstruct
     public void loadMovies() {
@@ -41,5 +41,22 @@ public class TopMovies {
                 .stream()
                 .filter(movie -> movie.getGenre().toLowerCase().contains(genre))
                 .toList();
+    }
+
+    public List<TopMovieModel> getPagedTopMovies(Integer page, String genre) {
+        List<TopMovieModel> allMovies;
+        if (genre == null) {
+            allMovies = getMovies();
+        } else {
+            allMovies = getByGenre(genre);
+        }
+        int pageSize = 10;
+        int totalMovies = allMovies.size();
+
+        // Handle pagination logic
+        int start = (page - 1) * pageSize;
+        int end = Math.min(start + pageSize, totalMovies);
+
+        return allMovies.subList(start, end);
     }
 }

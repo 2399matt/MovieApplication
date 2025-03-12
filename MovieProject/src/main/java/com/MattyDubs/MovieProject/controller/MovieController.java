@@ -74,10 +74,16 @@ public class MovieController {
      * @return The HTML fragment for the users personal movie-list page.
      */
     @GetMapping("/list")
-    public String listMovies(Model model, Principal principal) {
+    public String listMovies(@RequestParam(defaultValue = "10", name = "size") int size,
+                             @RequestParam(defaultValue = "1", name = "page") Integer page, Model model, Principal principal) {
         CustomUser user = userService.findUserAndMovies(principal.getName());
-        model.addAttribute("movies", user.getMovies());
-        return "/fragments/personal-list :: movie-list";
+//        int totalPages = (int) Math.ceil((double) user.getMovies().size() / size);
+//        List<Movie> userMovies = userService.getPagedMovies(user, page, size);
+//        model.addAttribute("movies", userMovies);
+//        model.addAttribute("page", page);
+//        model.addAttribute("totalPages", totalPages);
+//        return "/fragments/personal-list :: movie-list";
+        return returnListFragment(user, page, model);
     }
 
     /**
@@ -92,8 +98,8 @@ public class MovieController {
     public String saveMovie(@ModelAttribute("movie") Movie movie, Principal principal, Model model) {
         CustomUser user = userService.findUserAndMovies(principal.getName());
         movieService.saveMovieForUser(user, movie);
-        model.addAttribute("movies", user.getMovies());
-        return "/fragments/personal-list :: movie-list";
+        int page = 1;
+        return returnListFragment(user, page, model);
     }
 
     /**
@@ -103,11 +109,10 @@ public class MovieController {
      * @return the user back to the list, with the deleted movie gone.
      */
     @GetMapping("/deleteMovie")
-    public String deleteMovie(@RequestParam("id") int id, Model model, Principal principal) {
+    public String deleteMovie(@RequestParam(defaultValue = "1", name = "page") Integer page, @RequestParam("id") int id, Model model, Principal principal) {
         movieService.deleteMovie(id);
         CustomUser user = userService.findUserAndMovies(principal.getName());
-        model.addAttribute("movies", user.getMovies());
-        return "/fragments/personal-list :: movie-list";
+        return returnListFragment(user, page, model);
     }
 
     /**
@@ -145,9 +150,11 @@ public class MovieController {
      * @return show-movie HTML fragment, used to display many details on a single movie.
      */
     @GetMapping("/showMovieDetails")
-    public String showMovieDetails(@RequestParam("title") String title, @RequestParam("year") String year, Model model) {
+    public String showMovieDetails(@RequestParam("title") String title, @RequestParam("year") String year,
+                                   @RequestParam(required = false, name = "page") Integer page, Model model) {
         Movie movie = movieCheckService.checkMovieExistence(title, year);
         model.addAttribute("movie", movie);
+        model.addAttribute("page", page);
         return "fragments/show-movie :: show-movie";
     }
 
@@ -161,25 +168,19 @@ public class MovieController {
      * @return HTML fragment for the browse page. Movies are placed in a table.
      */
     @GetMapping("/browse")
-    public String showTopMovies(@RequestParam(required = false, name = "genre") String genre, @RequestParam(defaultValue = "1") int page, Model model) {
-        List<TopMovieModel> allMovies;
-        if (genre == null) {
-            allMovies = topMovies.getMovies();
-        } else {
-            allMovies = topMovies.getByGenre(genre);
-        }
+    public String showTopMovies(@RequestParam(required = false, name = "browseGenre") String genre, @RequestParam(defaultValue = "1", name = "browsePage") Integer page, Model model) {
+        int totalPages;
         int pageSize = 10;
-        int totalMovies = allMovies.size();
-        int totalPages = (int) Math.ceil((double) totalMovies / pageSize);
-
-        int start = (page - 1) * pageSize;
-        int end = Math.min(start + pageSize, totalMovies);
-        List<TopMovieModel> moviesPage = allMovies.subList(start, end);
-
+        List<TopMovieModel> moviesPage = topMovies.getPagedTopMovies(page, genre);
+        if (genre == null) {
+            totalPages = (int) Math.ceil((double) topMovies.getMovies().size() / pageSize);
+        } else {
+            totalPages = (int) Math.ceil((double) topMovies.getByGenre(genre).size() / pageSize);
+        }
         model.addAttribute("movies", moviesPage);
-        model.addAttribute("page", page);
+        model.addAttribute("browsePage", page);
         model.addAttribute("totalPages", totalPages);
-        model.addAttribute("genre", genre);
+        model.addAttribute("browseGenre", genre);
         return "/fragments/browse-frag :: browse-frag";
     }
 
@@ -194,9 +195,10 @@ public class MovieController {
      * @return HTML fragment for the update form. Will be placed where the button is in the table when clicked.
      */
     @GetMapping("/updateForm")
-    public String updateForm(@RequestParam("title") String title, @RequestParam("year") String year, Model model) {
+    public String updateForm(@RequestParam(defaultValue = "1", name = "page") Integer page, @RequestParam("title") String title, @RequestParam("year") String year, Model model) {
         model.addAttribute("title", title);
         model.addAttribute("year", year);
+        model.addAttribute("page", page);
         return "/fragments/updateForm :: updateForm";
     }
 
@@ -212,17 +214,15 @@ public class MovieController {
      * @return HTML fragment for the personal movie-list page. Watched status will be updated.
      */
     @PostMapping("/updateWatchedStatus")
-    public String updateWatchStatus(@RequestParam("title") String title, @RequestParam("year") String year,
-                                    @RequestParam("status") String status, Principal principal, Model model) {
-        System.out.println(status);
-        userService.updateMovieForUser(principal.getName(), title, year, status);
+    public String updateWatchStatus(@RequestParam(defaultValue = "1", name = "page") Integer page, @RequestParam("title") String title,
+                                    @RequestParam("year") String year, @RequestParam("status") String status, Principal principal, Model model) {
         CustomUser user = userService.findUserAndMovies(principal.getName());
-        model.addAttribute("movies", user.getMovies());
-        return "/fragments/personal-list :: movie-list";
+        userService.updateMovieForUser(principal.getName(), title, year, status);
+        return returnListFragment(user, page, model);
     }
 
     /**
-     * clear-search endpoint acts as a way to close div's on the page. HTMX is used to inject the empty DIV inside
+     * clear-search endpoint acts as a way to close divs on the page. HTMX is used to inject the empty DIV inside
      * the DIV that they are currently in.
      *
      * @param model the model.
@@ -231,6 +231,35 @@ public class MovieController {
     @GetMapping("/clear-search")
     public String clearSearch(Model model) {
         return "/fragments/empty :: empty";
+    }
+
+    /**
+     * Helper method to get pageination logic for users personal list page.
+     *
+     * @param model The model.
+     * @param user  The current user.
+     * @param page  The page that the user is on.
+     * @param size  The amount of movies to be displayed per page, 10.
+     */
+    private void addPaginationAttributes(Model model, CustomUser user, int page, int size) {
+        int totalPages = (int) Math.ceil((double) user.getMovies().size() / size);
+        List<Movie> userMovies = userService.getPagedMovies(user, page, size);
+        model.addAttribute("movies", userMovies);
+        model.addAttribute("page", page);
+        model.addAttribute("totalPages", totalPages);
+    }
+
+    /**
+     * Helper method used to bundle the pageination logic and return statement for the users list page.
+     *
+     * @param user  The current user.
+     * @param page  The current page that the user is on.
+     * @param model The model.
+     * @return String value for the HTML fragment of the users personal movie list.
+     */
+    private String returnListFragment(CustomUser user, int page, Model model) {
+        addPaginationAttributes(model, user, page, 10);
+        return "/fragments/personal-list :: movie-list";
     }
 
 }

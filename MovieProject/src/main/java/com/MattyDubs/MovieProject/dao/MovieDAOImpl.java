@@ -78,4 +78,13 @@ public class MovieDAOImpl implements MovieDAO {
                 .getResultList().stream().findFirst().orElse(null);
     }
 
+    @Override
+    public boolean movieUserCheck(CustomUser user, String title) {
+        long exists = entityManager.createQuery("SELECT COUNT(m) FROM Movie m WHERE m.title=:title AND m.user.id=:id", Long.class)
+                .setParameter("title", title)
+                .setParameter("id", user.getId())
+                .getSingleResult();
+        return exists == 0;
+    }
+
 }

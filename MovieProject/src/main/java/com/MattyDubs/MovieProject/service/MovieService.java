@@ -34,7 +34,9 @@ public interface MovieService {
      * @param movie The movie to be saved.
      * @return The users movie personal movie list.
      */
-    List<Movie> saveMovieForUser(CustomUser user, Movie movie);
+    void saveMovieForUser(CustomUser user, Movie movie);
 
     void updateMovie(Movie movie);
+
+    boolean movieUserCheck(CustomUser user, String title);
 }

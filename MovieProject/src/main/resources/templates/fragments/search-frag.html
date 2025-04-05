@@ -19,6 +19,9 @@
                 <input type="radio" name="type" value="series"> Series
             </label>
         </div>
-        <button hx-post="/movies/showMovie" hx-target="#movieResults" hx-swap="innerHTML" class="btn btn-primary w-100 btn-custom" type="submit">Search</button>
+        <button hx-on::after-request="document.getElementById('search-frag').style.display='none'"
+                hx-post="/movies/showMovie"
+                hx-target="#movieResults"
+                hx-swap="innerHTML" class="btn btn-primary w-100 btn-custom" type="submit">Search</button>
     </form>
 </div>

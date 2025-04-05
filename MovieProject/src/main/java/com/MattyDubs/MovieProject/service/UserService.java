@@ -31,4 +31,5 @@ public interface UserService {
     boolean checkUserExists(String username);
 
     List<Movie> getPagedMovies(CustomUser user, int page, int size);
+
 }

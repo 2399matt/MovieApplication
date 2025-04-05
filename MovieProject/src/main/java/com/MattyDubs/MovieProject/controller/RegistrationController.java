@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/register")
 public class RegistrationController {
+    //TODO USERNAME AND MOVIES CHECK SHOULD USE A COUNT QUERY.
 
     private final RegistrationService registrationService;
     private final UserService userService;
@@ -57,7 +58,7 @@ public class RegistrationController {
      */
     @PostMapping("/addUser")
     public String addUser(@ModelAttribute("user") WebUser webUser, @RequestParam("passCheck") String password, Model model) {
-        if (userService.checkUserExists(webUser.getUsername())) {
+        if (!userService.checkUserExists(webUser.getUsername())) {
             model.addAttribute("userError", "username already exists.");
             return "reg-form";
         }

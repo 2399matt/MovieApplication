@@ -62,7 +62,8 @@ public class MovieController {
      * @return The HTML document for our homepage.
      */
     @GetMapping("/home")
-    public String homePage() {
+    public String homePage(Model model, Principal principal) {
+        model.addAttribute("username", principal.getName());
         return "search-movies-test";
     }
 
@@ -77,12 +78,6 @@ public class MovieController {
     public String listMovies(@RequestParam(defaultValue = "10", name = "size") int size,
                              @RequestParam(defaultValue = "1", name = "page") Integer page, Model model, Principal principal) {
         CustomUser user = userService.findUserAndMovies(principal.getName());
-//        int totalPages = (int) Math.ceil((double) user.getMovies().size() / size);
-//        List<Movie> userMovies = userService.getPagedMovies(user, page, size);
-//        model.addAttribute("movies", userMovies);
-//        model.addAttribute("page", page);
-//        model.addAttribute("totalPages", totalPages);
-//        return "/fragments/personal-list :: movie-list";
         return returnListFragment(user, page, model);
     }
 
@@ -225,11 +220,10 @@ public class MovieController {
      * clear-search endpoint acts as a way to close divs on the page. HTMX is used to inject the empty DIV inside
      * the DIV that they are currently in.
      *
-     * @param model the model.
      * @return HTML fragment that consists of an empty div element.
      */
     @GetMapping("/clear-search")
-    public String clearSearch(Model model) {
+    public String clearSearch() {
         return "/fragments/empty :: empty";
     }
 

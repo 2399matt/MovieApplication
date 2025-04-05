@@ -65,18 +65,11 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public List<Movie> saveMovieForUser(CustomUser user, Movie movie) {
-        Movie check = user.getMovies().stream()
-                .filter(m -> m.getTitle().equals(movie.getTitle()) && m.getYear().equals(movie.getYear()))
-                .findFirst()
-                .orElse(null);
-        if (check != null) {
-            return user.getMovies();
-        } else {
+    public void saveMovieForUser(CustomUser user, Movie movie) {
+        if (movieUserCheck(user, movie.getTitle())) {
             movie.setUser(user);
             user.getMovies().add(movie);
             movieDAO.save(movie, user);
-            return user.getMovies();
         }
     }
 
@@ -84,5 +77,10 @@ public class MovieServiceImpl implements MovieService {
     @Transactional
     public void updateMovie(Movie movie) {
         movieDAO.updateMovie(movie);
+    }
+
+    @Override
+    public boolean movieUserCheck(CustomUser user, String title) {
+        return movieDAO.movieUserCheck(user, title);
     }
 }

@@ -52,13 +52,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean checkUserExists(String username) {
-        List<CustomUser> users = userDAO.findAll();
-        CustomUser userCheck = users
-                .stream()
-                .filter(user -> user.getUsername().equals(username))
-                .findFirst()
-                .orElse(null);
-        return userCheck != null;
+        return userDAO.checkUserExists(username);
     }
 
     public List<Movie> getPagedMovies(CustomUser user, int page, int size) {

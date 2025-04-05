@@ -2,14 +2,18 @@ package com.MattyDubs.MovieProject.controller;
 
 
 import com.MattyDubs.MovieProject.entity.CustomUser;
+import com.MattyDubs.MovieProject.entity.Likes;
 import com.MattyDubs.MovieProject.entity.Post;
 import com.MattyDubs.MovieProject.entity.Reply;
+import com.MattyDubs.MovieProject.service.LikesServiceImpl;
 import com.MattyDubs.MovieProject.service.PostService;
 import com.MattyDubs.MovieProject.service.ReplyService;
 import com.MattyDubs.MovieProject.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -21,15 +25,19 @@ import java.security.Principal;
 @RequestMapping("/forum")
 public class ForumController {
 
+    //TODO Add validation on inputs. Probably should setup a requestMatcher for forums LOL.
+
     private final UserService userService;
     private final PostService postService;
     private final ReplyService replyService;
+    private final LikesServiceImpl likesServiceImpl;
 
     @Autowired
-    public ForumController(UserService userService, PostService postService, ReplyService replyService) {
+    public ForumController(UserService userService, PostService postService, ReplyService replyService, LikesServiceImpl likesServiceImpl) {
         this.userService = userService;
         this.postService = postService;
         this.replyService = replyService;
+        this.likesServiceImpl = likesServiceImpl;
     }
 
     /**
@@ -89,11 +97,17 @@ public class ForumController {
      * @return The forum fragment for listing all posts.
      */
     @PostMapping("/savePost")
-    public String savePost(@ModelAttribute("post") Post post, Principal principal, Model model) {
-        CustomUser user = userService.findByUsername(principal.getName());
-        postService.savePostForPage(user, post);
-        model.addAttribute("forums", postService.findAllContent());
-        return "/forumPages/forums :: forumFrag";
+    public String savePost(@Valid @ModelAttribute("post") Post post, BindingResult br, Principal principal, Model model) {
+        if (br.hasErrors()) {
+            return "/forumPages/postForm :: postForm";
+        } else {
+            CustomUser user = userService.findByUsername(principal.getName());
+            postService.savePostForPage(user, post);
+            Likes like = new Likes();
+            likesServiceImpl.saveLikes(like, user, post);
+            model.addAttribute("forums", postService.findAllContent());
+            return "/forumPages/forums :: forumFrag";
+        }
     }
 
     /**
@@ -104,7 +118,8 @@ public class ForumController {
      * @return The form fragment for making a new reply.
      */
     @GetMapping("/replyForm")
-    public String replyForm(@RequestParam("postId") int postId, Model model) {
+    public String replyForm(@RequestParam(required = false, name = "badReply") boolean badReply, @RequestParam("postId") int postId, Model model) {
+        model.addAttribute("badReply", badReply);
         model.addAttribute("reply", new Reply());
         model.addAttribute("postId", postId);
         return "/forumPages/replyForm :: replyForm";
@@ -120,10 +135,32 @@ public class ForumController {
      * @return The postView fragment, which displays the post and its replies.
      */
     @PostMapping("/saveReply")
-    public String saveReply(@ModelAttribute("reply") Reply reply, @RequestParam("postId") int postId, Model model, Principal principal) {
+    public String saveReply(@ModelAttribute("reply") Reply reply,
+                            @RequestParam("postId") int postId, Model model, Principal principal) {
+        if (reply.getComment().isEmpty() || reply.getComment().length() > 255) {
+            model.addAttribute("post", postService.findById(postId));
+            model.addAttribute("badReply", true);
+            return "/forumPages/PostView :: postView";
+        }
         Post currPost = postService.findById(postId);
         CustomUser user = userService.findByUsername(principal.getName());
         replyService.saveReplyForPage(reply, user, currPost);
+        model.addAttribute("post", currPost);
+        return "/forumPages/PostView :: postView";
+    }
+
+    //TODO CHANGING TO CHECK WITH PRINCIPAL, MIGHT BREAK <<<<<<<<<<<<<<<<<<<<<
+
+    @GetMapping("/upVote")
+    public String upVote(@RequestParam(name = "id") int id, Model model, Principal principal) {
+        Post currPost = postService.findPostAndReplies(id);
+        CustomUser user = userService.findByUsername(principal.getName());
+        if (likesServiceImpl.findByUserAndPost(user, currPost)) {
+            Likes like = new Likes();
+            likesServiceImpl.saveLikes(like, user, currPost);
+            currPost.addVote();
+            postService.update(currPost);
+        }
         model.addAttribute("post", currPost);
         return "/forumPages/PostView :: postView";
     }

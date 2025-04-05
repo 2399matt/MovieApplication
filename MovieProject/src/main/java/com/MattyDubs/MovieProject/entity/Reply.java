@@ -1,6 +1,7 @@
 package com.MattyDubs.MovieProject.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "replies")
@@ -12,6 +13,7 @@ public class Reply {
     private int id;
 
     @Column(name = "comment")
+    @NotNull
     private String comment;
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE,

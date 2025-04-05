@@ -31,4 +31,6 @@ public interface MovieDAO {
 
     void updateMovie(Movie movie);
 
+    boolean movieUserCheck(CustomUser user, String title);
+
 }

@@ -4,12 +4,14 @@
     <!-- Title Input -->
     <div class="mb-3">
       <label for="title" class="form-label">Post Title</label>
+      <span th:errors="*{title}" th:if="${#fields.hasErrors('title')}" class="error" style="color:red;"></span>
       <input th:field="*{title}" type="text" class="form-control" id="title" name="title" required>
     </div>
 
     <!-- Content Textarea -->
     <div class="mb-3">
       <label for="content" class="form-label">Post Content</label>
+      <span th:errors="*{content}" th:if="${#fields.hasErrors('content')}" class="error" style="color:red;"></span>
       <textarea th:field="*{content}" class="form-control" id="content" name="content" rows="5" required></textarea>
     </div>
     <input th:field="*{id}" type="hidden">

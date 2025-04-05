@@ -18,4 +18,6 @@ public interface UserDAO {
     CustomUser findUserAndMovies(String username);
 
     List<CustomUser> findAll();
+
+    boolean checkUserExists(String username);
 }

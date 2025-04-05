@@ -1,6 +1,8 @@
 package com.MattyDubs.MovieProject.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +17,17 @@ public class Post {
     private int id;
 
     @Column(name = "title")
+    @NotNull
+    @Size(min = 1, max = 90, message = "title cannot be empty or exceed 90 characters.")
     private String title;
 
     @Column(name = "content")
+    @NotNull
+    @Size(min = 1, max = 2000, message = "Content of post cannot be empty, and cannot exceed 2000 characters.")
     private String content;
+
+    @Column(name = "upvotes")
+    private Integer upvotes;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH})
@@ -35,6 +44,19 @@ public class Post {
     public Post(String title, String content) {
         this.title = title;
         this.content = content;
+        this.upvotes = 0;
+    }
+
+    public Integer getUpvotes() {
+        return upvotes;
+    }
+
+    public void setUpvotes(Integer upvotes) {
+        this.upvotes = upvotes;
+    }
+
+    public void addVote() {
+        this.upvotes++;
     }
 
     public int getId() {

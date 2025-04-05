@@ -51,4 +51,13 @@ public class UserDAOImpl implements UserDAO {
     public List<CustomUser> findAll() {
         return entityManager.createQuery("SELECT u FROM CustomUser u", CustomUser.class).getResultList();
     }
+
+    @Override
+    public boolean checkUserExists(String username) {
+        long exists = entityManager.createQuery("SELECT COUNT(u) FROM CustomUser u WHERE u.username=:username", Long.class)
+                .setParameter("username", username)
+                .getSingleResult();
+        System.out.println(exists);
+        return exists == 0;
+    }
 }

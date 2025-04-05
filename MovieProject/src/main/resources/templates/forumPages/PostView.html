@@ -1,30 +1,24 @@
-<!--<div th:fragment="postView">
-
-    <h1 th:text="${post.title}"></h1>
-    <h3 th:text="${post.content}"></h3>
-    Posted by: <p th:text="${post.user.username}"></p>
-
-    <ul>
-        <li th:each="reply : ${post.replies}">
-            <div>
-                <p th:text="${reply.comment}"></p>
-                Posted by: <p th:text="${reply.user.username}"></p>
-            </div>
-        </li>
-    </ul>-->
-
 <div class="card mb-3 full-width-card" th:fragment="postView">
     <div class="post-box">
-        <h3 class="card-header" th:text="${post.title}"></h3>
+        <div class="card-header post-header">
+            <h3 th:text="${post.title}"></h3>
+            <div class="vote-section">
+                <i class="fa fa-arrow-up"></i>
+                <span th:text="${post.upvotes}"></span>
+            </div>
+        </div>
         <div class="card-body">
             <h5 class="card-text" th:text="${post.content}"></h5>
             <br>
             <footer class="blockquote-footer" th:text="${post.user.username}"></footer>
+            <br>
+            <a hx:get="@{/forum/upVote(id=${post.id})}" hx-swap="innerHTML" hx-target="#forumContainer"class="fa fa-thumbs-up"></a>
         </div>
     </div>
 
     <div id="replyBox"></div>
     <button class="btn btn-sm btn-dark" style="width:10%; margin:0 auto;" hx:get="@{/forum/replyForm(postId=${post.id})}" hx-swap="innerHTML" hx-target="#replyBox">Reply</button>
+    <input type="hidden" th:if="${badReply}" hx-trigger="load" hx:get="@{/forum/replyForm(badReply = ${badReply}, postId=${post.id})}" hx-target="#replyBox" hx-swap="innerHTML">
 
     <ul class="list-group list-group-flush">
         <li class="list-group-item" th:each="reply : ${post.replies}">

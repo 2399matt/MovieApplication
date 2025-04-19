@@ -44,4 +44,6 @@ public interface PostService {
      * @param post The post to be saved.
      */
     void savePostForPage(CustomUser user, Post post);
+
+    Post findPostUserAndReplies(int id);
 }

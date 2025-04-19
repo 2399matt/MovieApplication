@@ -71,7 +71,8 @@ public class ForumController {
      */
     @GetMapping("/viewPost")
     public String showPost(@RequestParam("id") int id, Model model) {
-        Post post = postService.findById(id);
+        //Post post = postService.findById(id);
+        Post post = postService.findPostUserAndReplies(id);
         model.addAttribute("post", post);
         return "/forumPages/PostView :: postView";
     }

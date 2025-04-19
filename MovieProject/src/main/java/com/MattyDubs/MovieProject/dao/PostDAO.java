@@ -24,4 +24,6 @@ public interface PostDAO {
     List<Post> findAllContent();
 
     Post findPostAndReplies(int id);
+
+    Post findPostUserAndReplies(int id);
 }

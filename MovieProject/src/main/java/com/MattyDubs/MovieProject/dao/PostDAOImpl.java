@@ -36,6 +36,11 @@ public class PostDAOImpl implements PostDAO {
                 .setParameter("title", title)
                 .getSingleResult();
     }
+    public Post findPostUserAndReplies(int id){
+        return entityManager.createQuery("SELECT p FROM Post p LEFT JOIN FETCH p.replies r LEFT JOIN FETCH r.user JOIN FETCH p.user WHERE p.id=:id", Post.class)
+                .setParameter("id", id)
+                .getSingleResult();
+    }
 
     @Override
     @Transactional

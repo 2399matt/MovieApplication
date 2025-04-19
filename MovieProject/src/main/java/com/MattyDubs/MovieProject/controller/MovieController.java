@@ -212,7 +212,7 @@ public class MovieController {
     public String updateWatchStatus(@RequestParam(defaultValue = "1", name = "page") Integer page, @RequestParam("title") String title,
                                     @RequestParam("year") String year, @RequestParam("status") String status, Principal principal, Model model) {
         CustomUser user = userService.findUserAndMovies(principal.getName());
-        userService.updateMovieForUser(principal.getName(), title, year, status);
+        userService.updateMovieForUser(user, title, year, status);
         return returnListFragment(user, page, model);
     }
 

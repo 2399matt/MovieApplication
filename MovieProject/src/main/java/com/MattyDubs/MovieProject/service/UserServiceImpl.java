@@ -37,8 +37,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateMovieForUser(String username, String title, String year, String status) {
-        CustomUser user = findUserAndMovies(username);
+    public void updateMovieForUser(CustomUser user, String title, String year, String status) {
+        // CustomUser user = findUserAndMovies(username);
         Movie movieToUpdate = user.getMovies()
                 .stream()
                 .filter(mov -> mov.getTitle().equals(title) && mov.getYear().equals(year))

@@ -29,6 +29,7 @@ public class SecurityConfig {
                         config
                                 .requestMatchers("/register/**").permitAll()
                                 .requestMatchers("/movies/**").hasRole("USER")
+                                .requestMatchers("/forum/**").hasRole("USER")
                                 .anyRequest()
                                 .authenticated()
                 )

@@ -71,7 +71,7 @@ public class ForumController {
      */
     @GetMapping("/viewPost")
     public String showPost(@RequestParam("id") int id, Model model) {
-        //Post post = postService.findById(id);
+        // n+1 Post post = postService.findById(id);
         Post post = postService.findPostUserAndReplies(id);
         model.addAttribute("post", post);
         return "/forumPages/PostView :: postView";
@@ -139,12 +139,14 @@ public class ForumController {
     public String saveReply(@ModelAttribute("reply") Reply reply,
                             @RequestParam("postId") int postId, Model model, Principal principal) {
         if (reply.getComment().isEmpty() || reply.getComment().length() > 255) {
-            model.addAttribute("post", postService.findById(postId));
+            model.addAttribute("post", postService.findPostUserAndReplies(postId));
             model.addAttribute("badReply", true);
             return "/forumPages/PostView :: postView";
         }
-        Post currPost = postService.findById(postId);
-        CustomUser user = userService.findByUsername(principal.getName());
+//        n+1?? Post currPost = postService.findById(postId);
+//        CustomUser user = userService.findByUsername(principal.getName());
+        Post currPost = postService.findPostUserAndReplies(postId);
+        CustomUser user = currPost.getUser();
         replyService.saveReplyForPage(reply, user, currPost);
         model.addAttribute("post", currPost);
         return "/forumPages/PostView :: postView";
@@ -153,9 +155,10 @@ public class ForumController {
     //TODO CHANGING TO CHECK WITH PRINCIPAL, MIGHT BREAK <<<<<<<<<<<<<<<<<<<<<
 
     @GetMapping("/upVote")
-    public String upVote(@RequestParam(name = "id") int id, Model model, Principal principal) {
-        Post currPost = postService.findPostAndReplies(id);
-        CustomUser user = userService.findByUsername(principal.getName());
+    public String upVote(@RequestParam(name = "id") int id, Model model) {
+        Post currPost = postService.findPostUserAndReplies(id);
+        CustomUser user = currPost.getUser();
+        // Not needed, n+1 on the usernames for postView.  CustomUser user = userService.findByUsername(principal.getName());
         if (likesServiceImpl.findByUserAndPost(user, currPost)) {
             Likes like = new Likes();
             likesServiceImpl.saveLikes(like, user, currPost);

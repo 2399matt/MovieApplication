@@ -19,15 +19,16 @@ public class MovieAPIServiceImpl implements MovieAPIService {
 
     @Override
     public MovieListContainer getMovieByTitleAndYear(String title, String year, String type) {
-        return movieConfig.webClientBuilder(title, year, type).build().get().retrieve().bodyToMono(MovieListContainer.class).block();
+        return movieConfig.getMovieWithYear(title, year, type).build().get().retrieve().body(MovieListContainer.class);
     }
 
     @Override
     public MovieListContainer getMovieByTitle(String title, String type) {
-        return movieConfig.webClientBuilder(title, type).build().get().retrieve().bodyToMono(MovieListContainer.class).block();
+        return movieConfig.getMovieWithoutYear(title, type).build().get().retrieve().body(MovieListContainer.class);
     }
 
+    @Override
     public Movie getSingleMovie(String title, String year) {
-        return movieConfig.getSingleMovie(title, year).build().get().retrieve().bodyToMono(Movie.class).block();
+        return movieConfig.getSingleMovie(title, year).build().get().retrieve().body(Movie.class);
     }
 }

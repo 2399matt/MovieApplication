@@ -163,7 +163,8 @@ public class MovieController {
      * @return HTML fragment for the browse page. Movies are placed in a table.
      */
     @GetMapping("/browse")
-    public String showTopMovies(@RequestParam(required = false, name = "browseGenre") String genre, @RequestParam(defaultValue = "1", name = "browsePage") Integer page, Model model) {
+    public String showTopMovies(@RequestParam(required = false, name = "browseGenre") String genre,
+                                @RequestParam(defaultValue = "1", name = "browsePage") Integer page, Model model) {
         int totalPages;
         int pageSize = 10;
         List<TopMovieModel> moviesPage = topMovies.getPagedTopMovies(page, genre);

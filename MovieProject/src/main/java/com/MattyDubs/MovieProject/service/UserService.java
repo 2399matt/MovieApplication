@@ -21,10 +21,10 @@ public interface UserService {
      * updateMovieForUser method is used to update the watched status of a movie for a given user. Works with the
      * update methods in the MovieController class.
      *
-     * @param user user for the current logged-in user.
-     * @param title    Title of the movie to update.
-     * @param year     Year that the movie was released.
-     * @param status   Watched or unwatched status of the movie, string holds value of either true or false.
+     * @param user   user for the current logged-in user.
+     * @param title  Title of the movie to update.
+     * @param year   Year that the movie was released.
+     * @param status Watched or unwatched status of the movie, string holds value of either true or false.
      */
     void updateMovieForUser(CustomUser user, String title, String year, String status);
 

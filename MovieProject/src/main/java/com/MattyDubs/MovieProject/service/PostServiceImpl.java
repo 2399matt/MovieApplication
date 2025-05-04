@@ -69,7 +69,8 @@ public class PostServiceImpl implements PostService {
         user.addPost(post);
         savePost(post);
     }
-    public Post findPostUserAndReplies(int id){
+
+    public Post findPostUserAndReplies(int id) {
         return postDAO.findPostUserAndReplies(id);
     }
 }

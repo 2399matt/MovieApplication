@@ -21,7 +21,6 @@ public class MovieDAOImpl implements MovieDAO {
     }
 
     @Override
-    @Transactional
     public void save(Movie movie, CustomUser user) {
         List<Movie> movies = findByTitleYearUser(movie.getTitle(), movie.getYear(), user);
         if (movies.isEmpty())
@@ -29,7 +28,6 @@ public class MovieDAOImpl implements MovieDAO {
     }
 
     @Override
-    @Transactional
     public void deleteMovie(Movie movie) {
         entityManager.remove(movie);
     }

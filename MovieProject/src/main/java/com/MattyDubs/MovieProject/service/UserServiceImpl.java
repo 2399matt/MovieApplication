@@ -5,6 +5,7 @@ import com.MattyDubs.MovieProject.entity.CustomUser;
 import com.MattyDubs.MovieProject.entity.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public CustomUser save(CustomUser user) {
         return userDAO.save(user);
     }
@@ -37,12 +39,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void updateMovieForUser(CustomUser user, String title, String year, String status) {
-        // CustomUser user = findUserAndMovies(username);
+        //TODO Make use of OPTIONAL here? Maybe ifPresent
         Movie movieToUpdate = user.getMovies()
+        //user.getMovies()
                 .stream()
                 .filter(mov -> mov.getTitle().equals(title) && mov.getYear().equals(year))
                 .findFirst()
+//              .ifPresent(movie->{
+//                    movie.setWatched(Boolean.valueOf(status));
+//                    movieService.updateMovie(movie);
+//                });
                 .orElse(null);
         if (movieToUpdate != null) {
             movieToUpdate.setWatched(Boolean.valueOf(status));

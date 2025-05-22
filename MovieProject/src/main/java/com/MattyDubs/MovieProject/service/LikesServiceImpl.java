@@ -4,6 +4,7 @@ import com.MattyDubs.MovieProject.dao.LikesDAOImpl;
 import com.MattyDubs.MovieProject.entity.CustomUser;
 import com.MattyDubs.MovieProject.entity.Likes;
 import com.MattyDubs.MovieProject.entity.Post;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class LikesServiceImpl implements LikesService {
         this.likesDAOImpl = likesDAOImpl;
     }
 
+    @Transactional
     public void saveLikes(Likes like, CustomUser user, Post post) {
         like.setUser(user);
         like.setPost(post);

@@ -63,6 +63,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public void savePostForPage(CustomUser user, Post post) {
         post.setUpvotes(0);
         post.setUser(user);

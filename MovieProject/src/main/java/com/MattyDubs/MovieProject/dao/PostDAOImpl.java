@@ -19,13 +19,11 @@ public class PostDAOImpl implements PostDAO {
     }
 
     @Override
-    @Transactional
     public void update(Post post) {
         entityManager.merge(post);
     }
 
     @Override
-    @Transactional
     public Post findById(int id) {
         return entityManager.find(Post.class, id);
     }
@@ -44,20 +42,17 @@ public class PostDAOImpl implements PostDAO {
     }
 
     @Override
-    @Transactional
     public void deleteById(int id) {
         Post postToRemove = entityManager.find(Post.class, id);
         entityManager.remove(postToRemove);
     }
 
     @Override
-    @Transactional
     public void deletePost(Post post) {
         entityManager.remove(post);
     }
 
     @Override
-    @Transactional
     public void savePost(Post post) {
         entityManager.persist(post);
     }

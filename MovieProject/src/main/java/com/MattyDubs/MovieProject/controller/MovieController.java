@@ -63,6 +63,7 @@ public class MovieController {
      */
     @GetMapping("/home")
     public String homePage(Model model, Principal principal) {
+        System.out.println(principal.getName() + " has logged in.");
         model.addAttribute("username", principal.getName());
         return "search-movies-test";
     }
@@ -98,7 +99,7 @@ public class MovieController {
     }
 
     /**
-     * Delete endpoint, used to remove a movie from the user's list. Triggered on button-click.
+     * Delete endpoint, used to remove a movie from the user's list. Triggered from personal-list
      *
      * @param id id of the movie to be deleted.
      * @return the user back to the list, with the deleted movie gone.

@@ -34,7 +34,8 @@
             <input th:field="*{imageURL}" type="hidden"/>
             <input th:field="*{director}" type="hidden"/>
             <input th:field="*{imdbId}" type="hidden"/>
-            <button hx-post="/movies/save"
+            <button hx-on::after-request="document.getElementById('show-movie').style.display='none'"
+                    hx-post="/movies/save"
                     hx-swap="innerHTML"
                     hx-target="#movieResults"
                     class="btn btn-success btn-custom" type="submit">Save Movie</button>

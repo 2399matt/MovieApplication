@@ -1,12 +1,12 @@
 package com.MattyDubs.MovieProject.entity;
 
-import org.springframework.stereotype.Component;
+
 
 /**
  * MovieSearch class holds the data for the movie that the user is searching for.
  * Data will be acquired through input fields on the webpage and bound to the title/year fields.
  */
-@Component
+
 public class MovieSearch {
 
     private String title;

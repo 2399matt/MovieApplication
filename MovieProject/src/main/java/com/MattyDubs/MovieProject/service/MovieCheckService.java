@@ -22,7 +22,7 @@ public class MovieCheckService {
     private final TopMovies topMovies;
 
     @Autowired
-    public MovieCheckService(TopMoviesRepo topMoviesRepo, MovieUtil movieUtil, MovieService movieService, MovieAPIService movieAPIService, TopMovies topMovies) {
+    public MovieCheckService(MovieUtil movieUtil, MovieService movieService, MovieAPIService movieAPIService, TopMovies topMovies) {
         this.movieUtil = movieUtil;
         this.movieService = movieService;
         this.movieAPIService = movieAPIService;

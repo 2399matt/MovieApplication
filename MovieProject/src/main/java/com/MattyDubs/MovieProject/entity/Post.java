@@ -55,6 +55,7 @@ public class Post {
         this.upvotes = upvotes;
     }
 
+    //TODO Synchronization, not thread safe right now.-------------------------------------
     public void addVote() {
         this.upvotes++;
     }

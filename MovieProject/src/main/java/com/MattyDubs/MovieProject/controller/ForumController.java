@@ -144,9 +144,8 @@ public class ForumController {
             return "/forumPages/PostView :: postView";
         }
 //        n+1?? Post currPost = postService.findById(postId);
-//        CustomUser user = userService.findByUsername(principal.getName());
+        CustomUser user = userService.findByUsername(principal.getName());
         Post currPost = postService.findPostUserAndReplies(postId);
-        CustomUser user = currPost.getUser();
         replyService.saveReplyForPage(reply, user, currPost);
         model.addAttribute("post", currPost);
         return "/forumPages/PostView :: postView";
@@ -155,10 +154,9 @@ public class ForumController {
     //TODO CHANGING TO CHECK WITH PRINCIPAL, MIGHT BREAK <<<<<<<<<<<<<<<<<<<<<
 
     @GetMapping("/upVote")
-    public String upVote(@RequestParam(name = "id") int id, Model model) {
+    public String upVote(@RequestParam(name = "id") int id, Model model, Principal principal) {
         Post currPost = postService.findPostUserAndReplies(id);
-        CustomUser user = currPost.getUser();
-        // Not needed, n+1 on the usernames for postView.  CustomUser user = userService.findByUsername(principal.getName());
+        CustomUser user = userService.findByUsername(principal.getName());
         if (likesServiceImpl.findByUserAndPost(user, currPost)) {
             Likes like = new Likes();
             likesServiceImpl.saveLikes(like, user, currPost);

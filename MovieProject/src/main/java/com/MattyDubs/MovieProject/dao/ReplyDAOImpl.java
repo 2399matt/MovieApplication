@@ -19,7 +19,6 @@ public class ReplyDAOImpl implements ReplyDAO {
     }
 
     @Override
-    @Transactional
     public void saveReply(Reply reply) {
         entityManager.persist(reply);
     }
@@ -30,14 +29,12 @@ public class ReplyDAOImpl implements ReplyDAO {
     }
 
     @Override
-    @Transactional
     public void deleteReply(int id) {
         Reply replyToRemove = entityManager.find(Reply.class, id);
         entityManager.remove(replyToRemove);
     }
 
     @Override
-    @Transactional
     public void updateReply(Reply reply) {
         entityManager.merge(reply);
     }

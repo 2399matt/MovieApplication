@@ -65,6 +65,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
+    @Transactional
     public void saveMovieForUser(CustomUser user, Movie movie) {
         if (movieUserCheck(user, movie.getTitle())) {
             movie.setUser(user);

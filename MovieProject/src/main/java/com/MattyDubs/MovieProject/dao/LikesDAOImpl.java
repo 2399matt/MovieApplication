@@ -4,6 +4,7 @@ import com.MattyDubs.MovieProject.entity.CustomUser;
 import com.MattyDubs.MovieProject.entity.Likes;
 import com.MattyDubs.MovieProject.entity.Post;
 import jakarta.persistence.EntityManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,11 +15,11 @@ public class LikesDAOImpl implements LikesDAO {
 
     private final EntityManager entityManager;
 
+    @Autowired
     public LikesDAOImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
-    @Transactional
     public void saveLikes(Likes like) {
         entityManager.persist(like);
     }

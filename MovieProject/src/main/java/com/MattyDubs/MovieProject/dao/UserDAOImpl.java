@@ -20,7 +20,6 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    @Transactional
     public CustomUser save(CustomUser user) {
         return entityManager.merge(user);
     }

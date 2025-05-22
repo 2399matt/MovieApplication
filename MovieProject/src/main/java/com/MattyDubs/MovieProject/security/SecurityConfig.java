@@ -3,6 +3,7 @@ package com.MattyDubs.MovieProject.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -14,6 +15,7 @@ import javax.sql.DataSource;
  * Configures the JDBC user details manager to handle authentication in our DB.
  */
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
     @Bean
@@ -42,7 +44,7 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout.permitAll())
                 .exceptionHandling(exc ->
-                        exc.accessDeniedPage("/access-denied")
+                        exc.accessDeniedPage("/error")
                 );
 
 

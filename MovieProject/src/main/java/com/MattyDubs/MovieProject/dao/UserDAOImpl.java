@@ -1,10 +1,10 @@
 package com.MattyDubs.MovieProject.dao;
 
 import com.MattyDubs.MovieProject.entity.CustomUser;
+import com.MattyDubs.MovieProject.entity.Movie;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -58,5 +58,14 @@ public class UserDAOImpl implements UserDAO {
                 .getSingleResult();
         System.out.println(exists);
         return exists == 0;
+    }
+
+    @Override
+    public CustomUser getUserAndMovies(CustomUser user) {
+        List<Movie> movies = entityManager.createQuery("SELECT m FROM Movie m WHERE m.user.id = :id", Movie.class)
+                .setParameter("id", user.getId())
+                .getResultList();
+        user.setMovies(movies);
+        return user;
     }
 }

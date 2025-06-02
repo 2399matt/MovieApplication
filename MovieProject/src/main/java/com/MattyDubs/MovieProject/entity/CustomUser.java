@@ -1,7 +1,10 @@
 package com.MattyDubs.MovieProject.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,10 +22,24 @@ public class CustomUser {
     @Column(name = "id")
     private int id;
 
+    @NotNull
+    @NotEmpty
     @Column(name = "username")
     private String username;
 
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+
+    -Removed the WebUser entity, and created a custom UserDetails / UserDetailsService implementation to provide to the Auth Provider.
+            -
+    @JsonIgnore
+    @NotNull
+    @NotEmpty
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "enabled", columnDefinition = "boolean default true")
+    private boolean enabled;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Movie> movies;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
@@ -37,6 +54,28 @@ public class CustomUser {
 
     public CustomUser(String username) {
         this.username = username;
+    }
+
+    public CustomUser(String username, String password, boolean enabled) {
+        this.username = username;
+        this.password = password;
+        this.enabled = enabled;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public List<Movie> getMovies() {

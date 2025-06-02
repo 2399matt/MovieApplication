@@ -46,4 +46,12 @@ public interface PostService {
     void savePostForPage(CustomUser user, Post post);
 
     Post findPostUserAndReplies(int id);
+
+    /**
+     * Method for finding all posts created by a given user.
+     *
+     * @param id user id
+     * @return list of posts created by the specified user.
+     */
+    List<Post> findUserPosts(int id);
 }

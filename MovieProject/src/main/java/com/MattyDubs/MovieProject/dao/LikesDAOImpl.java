@@ -6,7 +6,6 @@ import com.MattyDubs.MovieProject.entity.Post;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -43,5 +42,12 @@ public class LikesDAOImpl implements LikesDAO {
                 .getSingleResult();
         System.out.println(exists);
         return exists == 0;
+    }
+
+    //TODO TEMP CHECK TO SEE IF IT WORKS!!
+    public List<Post> findPostsLikedByUser(CustomUser user) {
+        return entityManager.createQuery("SELECT l.post FROM Likes l WHERE l.user.id = :id", Post.class)
+                .setParameter("id", user.getId())
+                .getResultList();
     }
 }

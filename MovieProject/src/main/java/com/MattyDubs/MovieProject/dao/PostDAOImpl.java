@@ -2,9 +2,9 @@ package com.MattyDubs.MovieProject.dao;
 
 import com.MattyDubs.MovieProject.entity.Post;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,15 +30,23 @@ public class PostDAOImpl implements PostDAO {
 
     @Override
     public Post findByTitle(String title) {
-        return entityManager.createQuery("SELECT p FROM Post p WHERE p.title = :title", Post.class)
-                .setParameter("title", title)
-                .getSingleResult();
+        try {
+            return entityManager.createQuery("SELECT p FROM Post p WHERE p.title = :title", Post.class)
+                    .setParameter("title", title)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     public Post findPostUserAndReplies(int id) {
-        return entityManager.createQuery("SELECT p FROM Post p LEFT JOIN FETCH p.replies r LEFT JOIN FETCH r.user JOIN FETCH p.user WHERE p.id=:id", Post.class)
-                .setParameter("id", id)
-                .getSingleResult();
+        try {
+            return entityManager.createQuery("SELECT p FROM Post p LEFT JOIN FETCH p.replies r LEFT JOIN FETCH r.user JOIN FETCH p.user WHERE p.id=:id", Post.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     @Override
@@ -64,8 +72,19 @@ public class PostDAOImpl implements PostDAO {
     }
 
     public Post findPostAndReplies(int id) {
-        return entityManager.createQuery("SELECT p FROM Post p LEFT JOIN FETCH p.replies WHERE p.id = :id", Post.class)
+        try {
+            return entityManager.createQuery("SELECT p FROM Post p LEFT JOIN FETCH p.replies WHERE p.id = :id", Post.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public List<Post> findUserPosts(int id) {
+        return entityManager.createQuery("SELECT p FROM Post p WHERE p.user.id = :id", Post.class)
                 .setParameter("id", id)
-                .getSingleResult();
+                .getResultList();
     }
 }

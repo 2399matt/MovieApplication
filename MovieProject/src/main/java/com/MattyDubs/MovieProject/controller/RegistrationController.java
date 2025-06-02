@@ -1,6 +1,6 @@
 package com.MattyDubs.MovieProject.controller;
 
-import com.MattyDubs.MovieProject.entity.WebUser;
+import com.MattyDubs.MovieProject.entity.CustomUser;
 import com.MattyDubs.MovieProject.service.RegistrationService;
 import com.MattyDubs.MovieProject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ public class RegistrationController {
      */
     @GetMapping("/new")
     public String showForm(Model model) {
-        model.addAttribute("user", new WebUser());
+        model.addAttribute("user", new CustomUser());
         return "reg-form";
     }
 
@@ -53,20 +53,20 @@ public class RegistrationController {
      * Post-handling for adding a new user. We create the customUser from the model attribute that holds the
      * WebUser object. Then we build a UserDetails object for Spring Security to use.
      *
-     * @param webUser The user entity needed for our Spring-Security setup.
+     * @param user The user entity needed for our Spring-Security setup.
      * @return the login form, so that the new user can log in.
      */
     @PostMapping("/addUser")
-    public String addUser(@ModelAttribute("user") WebUser webUser, @RequestParam("passCheck") String password, Model model) {
-        if (!userService.checkUserExists(webUser.getUsername())) {
+    public String addUser(@ModelAttribute("user") CustomUser user, @RequestParam("passCheck") String password, Model model) {
+        if (!userService.checkUserExists(user.getUsername())) {
             model.addAttribute("userError", "username already exists.");
             return "reg-form";
         }
-        if (!webUser.getPassword().equals(password)) {
+        if (!user.getPassword().equals(password)) {
             model.addAttribute("passError", "passwords do not match.");
             return "reg-form";
         }
-        registrationService.registerUser(webUser);
+        registrationService.registerUser(user);
         return "login-form";
     }
 }

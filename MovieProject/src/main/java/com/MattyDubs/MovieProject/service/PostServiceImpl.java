@@ -3,6 +3,7 @@ package com.MattyDubs.MovieProject.service;
 import com.MattyDubs.MovieProject.dao.PostDAO;
 import com.MattyDubs.MovieProject.entity.CustomUser;
 import com.MattyDubs.MovieProject.entity.Post;
+import com.MattyDubs.MovieProject.security.NoPostFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +34,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post findByTitle(String title) {
-        return postDAO.findByTitle(title);
+        Post post = postDAO.findByTitle(title);
+        if (post == null) {
+            throw new NoPostFoundException("No post found with title: " + title);
+        }
+        return post;
     }
 
     @Override
@@ -59,7 +64,11 @@ public class PostServiceImpl implements PostService {
     }
 
     public Post findPostAndReplies(int id) {
-        return postDAO.findPostAndReplies(id);
+        Post post = postDAO.findPostAndReplies(id);
+        if (post == null) {
+            throw new NoPostFoundException("No post found with id " + id);
+        }
+        return post;
     }
 
     @Override
@@ -67,11 +76,19 @@ public class PostServiceImpl implements PostService {
     public void savePostForPage(CustomUser user, Post post) {
         post.setUpvotes(0);
         post.setUser(user);
-        user.addPost(post);
         savePost(post);
     }
 
     public Post findPostUserAndReplies(int id) {
-        return postDAO.findPostUserAndReplies(id);
+        Post post = postDAO.findPostUserAndReplies(id);
+        if (post == null) {
+            throw new NoPostFoundException("No post found with id " + id);
+        }
+        return post;
+    }
+
+    @Override
+    public List<Post> findUserPosts(int id) {
+        return postDAO.findUserPosts(id);
     }
 }

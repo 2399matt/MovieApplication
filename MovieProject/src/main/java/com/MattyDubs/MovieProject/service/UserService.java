@@ -32,4 +32,6 @@ public interface UserService {
 
     List<Movie> getPagedMovies(CustomUser user, int page, int size);
 
+    CustomUser getUserAndMovies(CustomUser user);
+
 }

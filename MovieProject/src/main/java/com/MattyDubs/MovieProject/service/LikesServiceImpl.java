@@ -36,4 +36,8 @@ public class LikesServiceImpl implements LikesService {
     public boolean findByUserAndPost(CustomUser user, Post post) {
         return likesDAOImpl.findByUserAndPost(user, post);
     }
+
+    public List<Post> findPostsLikedByUser(CustomUser user) {
+        return likesDAOImpl.findPostsLikedByUser(user);
+    }
 }

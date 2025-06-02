@@ -1,12 +1,9 @@
 package com.MattyDubs.MovieProject.service;
 
 import com.MattyDubs.MovieProject.entity.CustomUser;
-import com.MattyDubs.MovieProject.entity.WebUser;
-import com.MattyDubs.MovieProject.security.PasswordEncoder;
+import com.MattyDubs.MovieProject.security.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,15 +12,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class RegistrationService {
 
-    private final JdbcUserDetailsManager jdbcUserDetailsManager;
+    private final MyUserDetailsService userDetailsService;
 
     private final UserService userService;
 
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public RegistrationService(JdbcUserDetailsManager jdbcUserDetailsManager, UserService userService, PasswordEncoder passwordEncoder) {
-        this.jdbcUserDetailsManager = jdbcUserDetailsManager;
+    public RegistrationService(MyUserDetailsService userDetailsService, UserService userService, PasswordEncoder passwordEncoder) {
+        this.userDetailsService = userDetailsService;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
@@ -31,16 +28,11 @@ public class RegistrationService {
     /**
      * registerUser method is used to create a new CustomUser and UserDetails object and save them to the database.
      *
-     * @param webUser The webUser object filled in by the user.
+     * @param user The CustomUser object filled in by the user.
      */
-    public void registerUser(WebUser webUser) {
-        CustomUser user = new CustomUser(webUser.getUsername());
+    public void registerUser(CustomUser user) {
+        user.setEnabled(true);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.save(user);
-        UserDetails userDetails = User.builder()
-                .username(webUser.getUsername())
-                .password(passwordEncoder.encoder().encode(webUser.getPassword()))
-                .roles("USER")
-                .build();
-        jdbcUserDetailsManager.createUser(userDetails);
     }
 }

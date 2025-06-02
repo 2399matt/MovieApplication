@@ -42,8 +42,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void updateMovieForUser(CustomUser user, String title, String year, String status) {
         //TODO Make use of OPTIONAL here? Maybe ifPresent
+        //TODO Again, we'll have to fetch with... user.setMovies(movieService.findAllByUser(user));
+        //user.setMovies(movieService.findAllByUser(user));
         Movie movieToUpdate = user.getMovies()
-        //user.getMovies()
+                //user.getMovies()
                 .stream()
                 .filter(mov -> mov.getTitle().equals(title) && mov.getYear().equals(year))
                 .findFirst()
@@ -64,9 +66,16 @@ public class UserServiceImpl implements UserService {
     }
 
     public List<Movie> getPagedMovies(CustomUser user, int page, int size) {
+        //TODO This is what we'll have to do. Can't lazy load with userdetails fetch... user.setMovies(movieService.findAllByUser(user));
+        //user.setMovies(movieService.findAllByUser(user));
         List<Movie> movies = user.getMovies();
         int start = (page - 1) * size;
         int end = Math.min(start + size, movies.size());
         return movies.subList(start, end);
+    }
+
+    @Override
+    public CustomUser getUserAndMovies(CustomUser user) {
+        return userDAO.getUserAndMovies(user);
     }
 }

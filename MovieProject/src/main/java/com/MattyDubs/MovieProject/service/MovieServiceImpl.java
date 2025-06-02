@@ -69,6 +69,7 @@ public class MovieServiceImpl implements MovieService {
     public void saveMovieForUser(CustomUser user, Movie movie) {
         if (movieUserCheck(user, movie.getTitle())) {
             movie.setUser(user);
+            //TODO below would break with UserDetails impl.
             user.getMovies().add(movie);
             movieDAO.save(movie, user);
         }

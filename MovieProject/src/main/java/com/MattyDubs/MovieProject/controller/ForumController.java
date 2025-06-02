@@ -5,18 +5,19 @@ import com.MattyDubs.MovieProject.entity.CustomUser;
 import com.MattyDubs.MovieProject.entity.Likes;
 import com.MattyDubs.MovieProject.entity.Post;
 import com.MattyDubs.MovieProject.entity.Reply;
+import com.MattyDubs.MovieProject.security.MyUserDetails;
 import com.MattyDubs.MovieProject.service.LikesServiceImpl;
 import com.MattyDubs.MovieProject.service.PostService;
 import com.MattyDubs.MovieProject.service.ReplyService;
-import com.MattyDubs.MovieProject.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
+import java.util.List;
 
 /**
  * ForumController is responsible for mapping all forum-related endpoints and actions.
@@ -27,14 +28,12 @@ public class ForumController {
 
     //TODO Add validation on inputs. Probably should setup a requestMatcher for forums LOL.
 
-    private final UserService userService;
     private final PostService postService;
     private final ReplyService replyService;
     private final LikesServiceImpl likesServiceImpl;
 
     @Autowired
-    public ForumController(UserService userService, PostService postService, ReplyService replyService, LikesServiceImpl likesServiceImpl) {
-        this.userService = userService;
+    public ForumController(PostService postService, ReplyService replyService, LikesServiceImpl likesServiceImpl) {
         this.postService = postService;
         this.replyService = replyService;
         this.likesServiceImpl = likesServiceImpl;
@@ -92,17 +91,17 @@ public class ForumController {
     /**
      * savePost method used to save a new post to the database. postForm endpoint sends the POST.
      *
-     * @param post      The post to be saved.
-     * @param principal Current logged-in user.
-     * @param model     The model.
+     * @param post        The post to be saved.
+     * @param userDetails Current logged-in user.
+     * @param model       The model.
      * @return The forum fragment for listing all posts.
      */
     @PostMapping("/savePost")
-    public String savePost(@Valid @ModelAttribute("post") Post post, BindingResult br, Principal principal, Model model) {
+    public String savePost(@Valid @ModelAttribute("post") Post post, BindingResult br, @AuthenticationPrincipal MyUserDetails userDetails, Model model) {
         if (br.hasErrors()) {
             return "/forumPages/postForm :: postForm";
         } else {
-            CustomUser user = userService.findByUsername(principal.getName());
+            CustomUser user = userDetails.getUser();
             postService.savePostForPage(user, post);
             Likes like = new Likes();
             likesServiceImpl.saveLikes(like, user, post);
@@ -129,22 +128,21 @@ public class ForumController {
     /**
      * saveReply method used to save a new reply to the database.
      *
-     * @param reply     The reply to be saved.
-     * @param postId    The post that the reply belongs to.
-     * @param model     The model.
-     * @param principal The current user.
+     * @param reply       The reply to be saved.
+     * @param postId      The post that the reply belongs to.
+     * @param model       The model.
+     * @param userDetails Instance of current user.
      * @return The postView fragment, which displays the post and its replies.
      */
     @PostMapping("/saveReply")
     public String saveReply(@ModelAttribute("reply") Reply reply,
-                            @RequestParam("postId") int postId, Model model, Principal principal) {
+                            @RequestParam("postId") int postId, Model model, @AuthenticationPrincipal MyUserDetails userDetails) {
         if (reply.getComment().isEmpty() || reply.getComment().length() > 255) {
             model.addAttribute("post", postService.findPostUserAndReplies(postId));
             model.addAttribute("badReply", true);
             return "/forumPages/PostView :: postView";
         }
-//        n+1?? Post currPost = postService.findById(postId);
-        CustomUser user = userService.findByUsername(principal.getName());
+        CustomUser user = userDetails.getUser();
         Post currPost = postService.findPostUserAndReplies(postId);
         replyService.saveReplyForPage(reply, user, currPost);
         model.addAttribute("post", currPost);
@@ -154,9 +152,9 @@ public class ForumController {
     //TODO CHANGING TO CHECK WITH PRINCIPAL, MIGHT BREAK <<<<<<<<<<<<<<<<<<<<<
 
     @GetMapping("/upVote")
-    public String upVote(@RequestParam(name = "id") int id, Model model, Principal principal) {
+    public String upVote(@RequestParam(name = "id") int id, Model model, @AuthenticationPrincipal MyUserDetails userDetails) {
         Post currPost = postService.findPostUserAndReplies(id);
-        CustomUser user = userService.findByUsername(principal.getName());
+        CustomUser user = userDetails.getUser();
         if (likesServiceImpl.findByUserAndPost(user, currPost)) {
             Likes like = new Likes();
             likesServiceImpl.saveLikes(like, user, currPost);
@@ -165,5 +163,14 @@ public class ForumController {
         }
         model.addAttribute("post", currPost);
         return "/forumPages/PostView :: postView";
+    }
+
+    @GetMapping("/likes")
+    public String likedPosts(@AuthenticationPrincipal MyUserDetails userDetails, Model model) {
+        CustomUser user = userDetails.getUser();
+        List<Post> posts = likesServiceImpl.findPostsLikedByUser(user);
+        model.addAttribute("forums", posts);
+        return "/forumPages/forums :: forumFrag";
+
     }
 }

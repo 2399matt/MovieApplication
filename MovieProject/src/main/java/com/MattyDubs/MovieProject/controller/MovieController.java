@@ -6,11 +6,13 @@ import com.MattyDubs.MovieProject.entity.CustomUser;
 import com.MattyDubs.MovieProject.entity.Movie;
 import com.MattyDubs.MovieProject.entity.MovieListContainer;
 import com.MattyDubs.MovieProject.entity.MovieSearch;
+import com.MattyDubs.MovieProject.security.MyUserDetails;
 import com.MattyDubs.MovieProject.service.MovieAPIService;
 import com.MattyDubs.MovieProject.service.MovieCheckService;
 import com.MattyDubs.MovieProject.service.MovieService;
 import com.MattyDubs.MovieProject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -77,8 +79,8 @@ public class MovieController {
      */
     @GetMapping("/list")
     public String listMovies(@RequestParam(defaultValue = "10", name = "size") int size,
-                             @RequestParam(defaultValue = "1", name = "page") Integer page, Model model, Principal principal) {
-        CustomUser user = userService.findUserAndMovies(principal.getName());
+                             @RequestParam(defaultValue = "1", name = "page") Integer page, Model model, @AuthenticationPrincipal MyUserDetails userDetails) {
+        CustomUser user = userService.getUserAndMovies(userDetails.getUser());
         return returnListFragment(user, page, model);
     }
 
@@ -91,8 +93,9 @@ public class MovieController {
      * @return The HTML fragment for the users personal movie-list page.
      */
     @PostMapping("/save")
-    public String saveMovie(@ModelAttribute("movie") Movie movie, Principal principal, Model model) {
-        CustomUser user = userService.findUserAndMovies(principal.getName());
+    public String saveMovie(@ModelAttribute("movie") Movie movie, @AuthenticationPrincipal MyUserDetails userDetails, Model model) {
+        //TODO We'll
+        CustomUser user = userService.getUserAndMovies(userDetails.getUser());
         movieService.saveMovieForUser(user, movie);
         int page = 1;
         return returnListFragment(user, page, model);
@@ -105,9 +108,9 @@ public class MovieController {
      * @return the user back to the list, with the deleted movie gone.
      */
     @GetMapping("/deleteMovie")
-    public String deleteMovie(@RequestParam(defaultValue = "1", name = "page") Integer page, @RequestParam("id") int id, Model model, Principal principal) {
+    public String deleteMovie(@RequestParam(defaultValue = "1", name = "page") Integer page, @RequestParam("id") int id, Model model, @AuthenticationPrincipal MyUserDetails userDetails) {
         movieService.deleteMovie(id);
-        CustomUser user = userService.findUserAndMovies(principal.getName());
+        CustomUser user = userService.getUserAndMovies(userDetails.getUser());
         return returnListFragment(user, page, model);
     }
 
@@ -212,8 +215,8 @@ public class MovieController {
      */
     @PostMapping("/updateWatchedStatus")
     public String updateWatchStatus(@RequestParam(defaultValue = "1", name = "page") Integer page, @RequestParam("title") String title,
-                                    @RequestParam("year") String year, @RequestParam("status") String status, Principal principal, Model model) {
-        CustomUser user = userService.findUserAndMovies(principal.getName());
+                                    @RequestParam("year") String year, @RequestParam("status") String status, @AuthenticationPrincipal MyUserDetails userDetails, Model model) {
+        CustomUser user = userService.getUserAndMovies(userDetails.getUser());
         userService.updateMovieForUser(user, title, year, status);
         return returnListFragment(user, page, model);
     }

@@ -49,12 +49,11 @@ public class ReplyServiceImpl implements ReplyService {
     }
 
     @Override
-    @jakarta.transaction.Transactional
+    @Transactional
     public void saveReplyForPage(Reply reply, CustomUser user, Post post) {
         reply.setPost(post);
         reply.setUser(user);
         post.addReply(reply);
-        user.addReply(reply);
         saveReply(reply);
     }
 }

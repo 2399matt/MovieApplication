@@ -3,6 +3,7 @@ package com.MattyDubs.MovieProject.dao;
 import com.MattyDubs.MovieProject.entity.CustomUser;
 import com.MattyDubs.MovieProject.entity.Movie;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -26,12 +27,13 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public CustomUser findByUsername(String username) {
-        CustomUser user = entityManager.createQuery("SELECT u FROM CustomUser u WHERE u.username=:username", CustomUser.class)
-                .setParameter("username", username)
-                .getSingleResult();
-        if (user == null)
-            throw new RuntimeException("User not found.");
-        return user;
+        try {
+            return entityManager.createQuery("SELECT u FROM CustomUser u WHERE u.username=:username", CustomUser.class)
+                    .setParameter("username", username)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     public CustomUser findUserAndMovies(String username) {

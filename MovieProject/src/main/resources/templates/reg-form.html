@@ -7,8 +7,9 @@
         .text-danger d-block{
             color: red;
         }
-        #formBox{
-        margin-top: 10%;
+        #formBox {
+            margin-top: 10%;
+        }
     </style>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet"/>
 </head>
@@ -18,6 +19,9 @@
         <div class="form-group row">
             <small th:if="${userError}" class="text-danger d-block" th:text="${userError}"></small>
             <input th:field="*{username}" class="form-control" required placeholder="Username"/>
+        </div>
+        <div class="form-group row">
+            <input th:field="*{email}" class="form-control" type="email" required placeholder="Email"/>
         </div>
         <div class="form-group row">
             <input th:field="*{password}" class="form-control" type="password" required placeholder="Password"/>

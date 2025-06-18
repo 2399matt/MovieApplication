@@ -2,6 +2,7 @@ package com.MattyDubs.MovieProject.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
@@ -27,9 +28,10 @@ public class CustomUser {
     @Column(name = "username")
     private String username;
 
+    @Column(name = "email")
+    @Email(message = "Please enter a valid email address.")
+    private String email;
 
-    -Removed the WebUser entity, and created a custom UserDetails / UserDetailsService implementation to provide to the Auth Provider.
-            -
     @JsonIgnore
     @NotNull
     @NotEmpty
@@ -56,7 +58,7 @@ public class CustomUser {
         this.username = username;
     }
 
-    public CustomUser(String username, String password, boolean enabled) {
+    public CustomUser(String username, String password, String email, boolean enabled) {
         this.username = username;
         this.password = password;
         this.enabled = enabled;
@@ -116,6 +118,14 @@ public class CustomUser {
 
     public void setReplies(List<Reply> replies) {
         this.replies = replies;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void addReply(Reply reply) {

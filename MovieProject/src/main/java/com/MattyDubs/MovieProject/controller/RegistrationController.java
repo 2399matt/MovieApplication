@@ -1,9 +1,11 @@
 package com.MattyDubs.MovieProject.controller;
 
 import com.MattyDubs.MovieProject.entity.CustomUser;
+import com.MattyDubs.MovieProject.event.RegistrationEvent;
 import com.MattyDubs.MovieProject.service.RegistrationService;
 import com.MattyDubs.MovieProject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,11 +21,13 @@ public class RegistrationController {
 
     private final RegistrationService registrationService;
     private final UserService userService;
+    private final ApplicationEventPublisher publisher;
 
     @Autowired
-    public RegistrationController(RegistrationService registrationService, UserService userService) {
+    public RegistrationController(RegistrationService registrationService, UserService userService, ApplicationEventPublisher publisher) {
         this.registrationService = registrationService;
         this.userService = userService;
+        this.publisher = publisher;
     }
 
     /**
@@ -67,6 +71,7 @@ public class RegistrationController {
             return "reg-form";
         }
         registrationService.registerUser(user);
+        publisher.publishEvent(new RegistrationEvent(user));
         return "login-form";
     }
 }

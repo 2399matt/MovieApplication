@@ -6,12 +6,15 @@ import com.MattyDubs.MovieProject.entity.CustomUser;
 import com.MattyDubs.MovieProject.entity.Movie;
 import com.MattyDubs.MovieProject.entity.MovieListContainer;
 import com.MattyDubs.MovieProject.entity.MovieSearch;
+import com.MattyDubs.MovieProject.event.MovieEmailRequestEvent;
 import com.MattyDubs.MovieProject.security.MyUserDetails;
 import com.MattyDubs.MovieProject.service.MovieAPIService;
 import com.MattyDubs.MovieProject.service.MovieCheckService;
 import com.MattyDubs.MovieProject.service.MovieService;
 import com.MattyDubs.MovieProject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,15 +36,17 @@ public class MovieController {
     private final UserService userService;
     private final TopMovies topMovies;
     private final MovieCheckService movieCheckService;
+    private final ApplicationEventPublisher publisher;
 
     @Autowired
     public MovieController(MovieService movieService, MovieAPIService movieAPIService, UserService userService,
-                           TopMovies topMovies, MovieCheckService movieCheckService) {
+                           TopMovies topMovies, MovieCheckService movieCheckService, ApplicationEventPublisher publisher) {
         this.movieService = movieService;
         this.movieAPIService = movieAPIService;
         this.userService = userService;
         this.topMovies = topMovies;
         this.movieCheckService = movieCheckService;
+        this.publisher = publisher;
     }
 
     /**
@@ -74,7 +79,8 @@ public class MovieController {
      * List endpoint, used to list all the movies that the logged-in user has saved.
      * Calls on UserService to fetch the user and the users movies with the Principal obj.
      *
-     * @param model The model.
+     * @param model       The model.
+     * @param userDetails Instance of UserDetails returned by Authentication, gives User obj of curr user.
      * @return The HTML fragment for the users personal movie-list page.
      */
     @GetMapping("/list")
@@ -89,7 +95,8 @@ public class MovieController {
      * Calls on UserService to find the current user with Principal and fetch the movie list.
      * Calls movieService to check if the user already saved the movie, if not, it will handle the save.
      *
-     * @param movie The movie to be saved, requested from the model
+     * @param movie       The movie to be saved, requested from the model
+     * @param userDetails Instance of UserDetails returned by Authentication, gives User obj of curr user.
      * @return The HTML fragment for the users personal movie-list page.
      */
     @PostMapping("/save")
@@ -104,7 +111,8 @@ public class MovieController {
     /**
      * Delete endpoint, used to remove a movie from the user's list. Triggered from personal-list
      *
-     * @param id id of the movie to be deleted.
+     * @param id          id of the movie to be deleted.
+     * @param userDetails Instance of UserDetails returned by Authentication, gives User obj of curr user.
      * @return the user back to the list, with the deleted movie gone.
      */
     @GetMapping("/deleteMovie")
@@ -206,11 +214,11 @@ public class MovieController {
      * updateWatchedStatus takes in information from the updateForm to update a movies watched status for the user.
      * Calls on userService to update the movie for the specific user.
      *
-     * @param title     Title of the movie.
-     * @param year      Year the movie was released.
-     * @param status    The status chosen by the user (watched = true, not watched = false).
-     * @param principal Principal class to retrieve the username of the current logged-in user.
-     * @param model     the model.
+     * @param title       Title of the movie.
+     * @param year        Year the movie was released.
+     * @param status      The status chosen by the user (watched = true, not watched = false).
+     * @param userDetails Instance of UserDetails returned by Authentication, gives User obj of curr user.
+     * @param model       the model.
      * @return HTML fragment for the personal movie-list page. Watched status will be updated.
      */
     @PostMapping("/updateWatchedStatus")
@@ -230,6 +238,14 @@ public class MovieController {
     @GetMapping("/clear-search")
     public String clearSearch() {
         return "/fragments/empty :: empty";
+    }
+
+    @GetMapping("/email-movie-list")
+    @ResponseBody
+    public ResponseEntity<?> sendMovieList(@AuthenticationPrincipal MyUserDetails userDetails){
+        CustomUser user = userService.getUserAndMovies(userDetails.getUser());
+        publisher.publishEvent(new MovieEmailRequestEvent(user.getMovies(), user));
+        return ResponseEntity.ok().build();
     }
 
     /**

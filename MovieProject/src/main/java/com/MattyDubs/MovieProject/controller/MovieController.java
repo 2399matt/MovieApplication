@@ -242,7 +242,7 @@ public class MovieController {
 
     @GetMapping("/email-movie-list")
     @ResponseBody
-    public ResponseEntity<?> sendMovieList(@AuthenticationPrincipal MyUserDetails userDetails){
+    public ResponseEntity<?> sendMovieList(@AuthenticationPrincipal MyUserDetails userDetails) {
         CustomUser user = userService.getUserAndMovies(userDetails.getUser());
         publisher.publishEvent(new MovieEmailRequestEvent(user.getMovies(), user));
         return ResponseEntity.ok().build();

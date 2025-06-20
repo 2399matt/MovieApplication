@@ -6,6 +6,8 @@
     const messageForm = document.querySelector("#msgForm");
     const messageInput = document.querySelector("#msgInput");
     const nameInput = document.querySelector("#name");
+    let socket = null;
+    let username = null;
 
     //TODO: Close WS Connection on minimize...
 
@@ -17,44 +19,61 @@
     messageForm.addEventListener("submit", sendMessage);
     messageBtn.addEventListener("submit", connect);
 
-    let stompClient = null;
-    let username = "";
-
-    function connect(event) {
-      event.preventDefault();
-      username = nameInput.value.trim();
-
-      let socket = new SockJS("/ws");
-      stompClient = Stomp.over(socket);
-      stompClient.connect({}, function() {
-        // FOR MANUAL SUBSCRIPTION!!   stompClient.subscribe(`/queue/ai/${username}`, onMessageReceived);
-        stompClient.subscribe("/user/queue/ai", onMessageReceived);
-        addMessage("System", `Welcome, ${username}!`, false);
-        stompClient.send("/app/welcome", {}, JSON.stringify({
-          message: `${username} joined the chat`,
-          sender: "System"
-        }));
-      });
+    function connect(e){
+        e.preventDefault();
+        socket = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws`);
+        socket.onmessage = onMessageReceived;
+        username = nameInput.value.trim();
+        const welcomeMessage = {
+            sender: "System",
+            message: `${username} has joined the chat!`
+        }
+        socket.onopen = function(){
+            socket.send(JSON.stringify(welcomeMessage));
+        }
+        addMessage(welcomeMessage.sender, welcomeMessage.message, false);
     }
+
+    // let stompClient = null;
+    // let username = "";
+    //
+    // function connect(event) {
+    //   event.preventDefault();
+    //   username = nameInput.value.trim();
+    //
+    //   let socket = new SockJS("/ws");
+    //   stompClient = Stomp.over(socket);
+    //   stompClient.connect({}, function() {
+    //     // FOR MANUAL SUBSCRIPTION!!   stompClient.subscribe(`/queue/ai/${username}`, onMessageReceived);
+    //     stompClient.subscribe("/user/queue/ai", onMessageReceived);
+    //     addMessage("System", `Welcome, ${username}!`, false);
+    //     stompClient.send("/app/welcome", {}, JSON.stringify({
+    //       message: `${username} joined the chat`,
+    //       sender: "System"
+    //     }));
+    //   });
+    // }
 
     function sendMessage(event) {
       event.preventDefault();
       const msg = messageInput.value.trim();
 
       if(!msg) return;
-      if(!stompClient || !username) {
-        alert("Please connect first");
-        return;
-      }
+      // if(!stompClient || !username) {
+      //   alert("Please connect first");
+      //   return;
+      // }
 
       addMessage(username, msg, true);
       const chatMessage = {sender: username, message: msg};
-      stompClient.send("/app/chat", {}, JSON.stringify(chatMessage));
+      //stompClient.send("/app/chat", {}, JSON.stringify(chatMessage));
+      socket.send(JSON.stringify(chatMessage));
       messageInput.value = "";
     }
 
     function onMessageReceived(payload) {
-      const message = JSON.parse(payload.body);
+      const message = JSON.parse(payload.data)
+      //const message = JSON.parse(payload.body);
       addMessage(message.sender, message.message, message.sender === username);
     }
 

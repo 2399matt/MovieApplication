@@ -30,16 +30,16 @@ public class Listener {
     }
 
     @EventListener
-    public void sendMovieList(MovieEmailRequestEvent event){
+    public void sendMovieList(MovieEmailRequestEvent event) {
         CustomUser user = event.getUser();
         List<Movie> movies = event.getMovies();
         String str = "";
-        for (Movie movie : movies){
+        for (Movie movie : movies) {
             str += movie.getTitle() + "\n";
         }
-        try{
+        try {
             emailSender.sendEmail(user.getEmail(), "Movie-List Request", str);
-        }catch(MailSendException e){
+        } catch (MailSendException e) {
             System.out.println("Error sending email to: " + user.getEmail() + " " + e.getMessage());
         }
     }

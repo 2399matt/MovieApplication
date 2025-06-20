@@ -62,6 +62,7 @@ public class CustomUser {
         this.username = username;
         this.password = password;
         this.enabled = enabled;
+        this.email = email;
     }
 
     public String getPassword() {

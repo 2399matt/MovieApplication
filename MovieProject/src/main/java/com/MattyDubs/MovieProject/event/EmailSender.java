@@ -14,8 +14,6 @@ public class EmailSender {
 
     private final JavaMailSender mailSender;
 
-
-
     @Autowired
     public EmailSender(JavaMailSender mailSender) {
         this.mailSender = mailSender;

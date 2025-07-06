@@ -1,7 +1,7 @@
 package com.MattyDubs.MovieProject.event;
 
 import com.MattyDubs.MovieProject.entity.CustomUser;
-import com.MattyDubs.MovieProject.entity.Movie;
+import com.MattyDubs.MovieProject.entity.UserMovies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.mail.MailSendException;
@@ -32,10 +32,10 @@ public class Listener {
     @EventListener
     public void sendMovieList(MovieEmailRequestEvent event) {
         CustomUser user = event.getUser();
-        List<Movie> movies = event.getMovies();
+        List<UserMovies> movies = event.getMovies();
         String str = "";
-        for (Movie movie : movies) {
-            str += movie.getTitle() + "\n";
+        for (UserMovies movie : movies) {
+            str += movie.getMovie().getTitle() + "\n";
         }
         try {
             emailSender.sendEmail(user.getEmail(), "Movie-List Request", str);

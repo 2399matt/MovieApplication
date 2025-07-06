@@ -1,6 +1,5 @@
 package com.MattyDubs.MovieProject.dao;
 
-import com.MattyDubs.MovieProject.entity.CustomUser;
 import com.MattyDubs.MovieProject.entity.Movie;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +14,13 @@ public class MovieDAOImpl implements MovieDAO {
     private final EntityManager entityManager;
 
     @Autowired
-    public MovieDAOImpl(EntityManager entityManager, UserDAO userDAO) {
+    public MovieDAOImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
     @Override
-    public void save(Movie movie, CustomUser user) {
-        List<Movie> movies = findByTitleYearUser(movie.getTitle(), movie.getYear(), user);
-        if (movies.isEmpty())
-            entityManager.persist(movie);
+    public Movie save(Movie movie) {
+        return entityManager.merge(movie);
     }
 
     @Override
@@ -54,19 +51,6 @@ public class MovieDAOImpl implements MovieDAO {
         return entityManager.createQuery("SELECT m FROM Movie m", Movie.class).getResultList();
     }
 
-    public List<Movie> findAllByUser(CustomUser user) {
-        return entityManager.createQuery("SELECT m FROM Movie m WHERE m.user.id=:id", Movie.class)
-                .setParameter("id", user.getId())
-                .getResultList();
-    }
-
-    public List<Movie> findByTitleYearUser(String title, String year, CustomUser user) {
-        return entityManager.createQuery("SELECT m FROM Movie m WHERE m.title = :title AND m.year=:year AND m.user.id = :id", Movie.class)
-                .setParameter("title", title)
-                .setParameter("year", year)
-                .setParameter("id", user.getId())
-                .getResultList();
-    }
 
     public Movie singleFindByTitleYear(String title, String year) {
         return entityManager.createQuery("SELECT m FROM Movie m WHERE m.title = :title AND m.year=:year", Movie.class)
@@ -75,13 +59,11 @@ public class MovieDAOImpl implements MovieDAO {
                 .getResultList().stream().findFirst().orElse(null);
     }
 
-    @Override
-    public boolean movieUserCheck(CustomUser user, String title) {
-        long exists = entityManager.createQuery("SELECT COUNT(m) FROM Movie m WHERE m.title=:title AND m.user.id=:id", Long.class)
+
+    public long beforeSaveCheck(String title) {
+        return entityManager.createQuery("SELECT COUNT(m) FROM Movie m WHERE m.title=:title", Long.class)
                 .setParameter("title", title)
-                .setParameter("id", user.getId())
                 .getSingleResult();
-        return exists == 0;
     }
 
 }

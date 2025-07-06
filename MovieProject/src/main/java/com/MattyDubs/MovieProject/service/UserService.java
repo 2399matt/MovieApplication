@@ -1,7 +1,7 @@
 package com.MattyDubs.MovieProject.service;
 
 import com.MattyDubs.MovieProject.entity.CustomUser;
-import com.MattyDubs.MovieProject.entity.Movie;
+import com.MattyDubs.MovieProject.entity.UserMovies;
 
 import java.util.List;
 
@@ -15,22 +15,9 @@ public interface UserService {
 
     CustomUser findByUsername(String username);
 
-    CustomUser findUserAndMovies(String username);
-
-    /**
-     * updateMovieForUser method is used to update the watched status of a movie for a given user. Works with the
-     * update methods in the MovieController class.
-     *
-     * @param user   user for the current logged-in user.
-     * @param title  Title of the movie to update.
-     * @param year   Year that the movie was released.
-     * @param status Watched or unwatched status of the movie, string holds value of either true or false.
-     */
-    void updateMovieForUser(CustomUser user, String title, String year, String status);
-
     boolean checkUserExists(String username);
 
-    List<Movie> getPagedMovies(CustomUser user, int page, int size);
+    List<UserMovies> getPagedMovies(CustomUser user, int page, int size);
 
     CustomUser getUserAndMovies(CustomUser user);
 

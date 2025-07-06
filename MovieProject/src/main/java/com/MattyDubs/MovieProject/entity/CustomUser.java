@@ -42,7 +42,7 @@ public class CustomUser {
     private boolean enabled;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Movie> movies;
+    private List<UserMovies> movies;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Post> posts;
@@ -81,11 +81,11 @@ public class CustomUser {
         this.enabled = enabled;
     }
 
-    public List<Movie> getMovies() {
+    public List<UserMovies> getMovies() {
         return movies;
     }
 
-    public void setMovies(List<Movie> movies) {
+    public void setMovies(List<UserMovies> movies) {
         this.movies = movies;
     }
 

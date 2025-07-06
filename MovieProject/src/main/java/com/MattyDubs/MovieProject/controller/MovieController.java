@@ -2,15 +2,12 @@ package com.MattyDubs.MovieProject.controller;
 
 import com.MattyDubs.MovieProject.data.TopMovieModel;
 import com.MattyDubs.MovieProject.data.TopMovies;
-import com.MattyDubs.MovieProject.entity.CustomUser;
-import com.MattyDubs.MovieProject.entity.Movie;
-import com.MattyDubs.MovieProject.entity.MovieListContainer;
-import com.MattyDubs.MovieProject.entity.MovieSearch;
+import com.MattyDubs.MovieProject.entity.*;
 import com.MattyDubs.MovieProject.event.MovieEmailRequestEvent;
 import com.MattyDubs.MovieProject.security.MyUserDetails;
 import com.MattyDubs.MovieProject.service.MovieAPIService;
 import com.MattyDubs.MovieProject.service.MovieCheckService;
-import com.MattyDubs.MovieProject.service.MovieService;
+import com.MattyDubs.MovieProject.service.UserMoviesService;
 import com.MattyDubs.MovieProject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -31,22 +28,22 @@ import java.util.List;
 @RequestMapping("/movies")
 public class MovieController {
 
-    private final MovieService movieService;
     private final MovieAPIService movieAPIService;
     private final UserService userService;
     private final TopMovies topMovies;
     private final MovieCheckService movieCheckService;
     private final ApplicationEventPublisher publisher;
+    private final UserMoviesService userMoviesService;
 
     @Autowired
-    public MovieController(MovieService movieService, MovieAPIService movieAPIService, UserService userService,
-                           TopMovies topMovies, MovieCheckService movieCheckService, ApplicationEventPublisher publisher) {
-        this.movieService = movieService;
+    public MovieController(MovieAPIService movieAPIService, UserService userService,
+                           TopMovies topMovies, MovieCheckService movieCheckService, ApplicationEventPublisher publisher, UserMoviesService userMoviesService) {
         this.movieAPIService = movieAPIService;
         this.userService = userService;
         this.topMovies = topMovies;
         this.movieCheckService = movieCheckService;
         this.publisher = publisher;
+        this.userMoviesService = userMoviesService;
     }
 
     /**
@@ -102,8 +99,8 @@ public class MovieController {
     @PostMapping("/save")
     public String saveMovie(@ModelAttribute("movie") Movie movie, @AuthenticationPrincipal MyUserDetails userDetails, Model model) {
         //TODO We'll
+        userMoviesService.saveMovieForUser(movie, userDetails.getUser());
         CustomUser user = userService.getUserAndMovies(userDetails.getUser());
-        movieService.saveMovieForUser(user, movie);
         int page = 1;
         return returnListFragment(user, page, model);
     }
@@ -117,7 +114,8 @@ public class MovieController {
      */
     @GetMapping("/deleteMovie")
     public String deleteMovie(@RequestParam(defaultValue = "1", name = "page") Integer page, @RequestParam("id") int id, Model model, @AuthenticationPrincipal MyUserDetails userDetails) {
-        movieService.deleteMovie(id);
+        UserMovies movieToDelete = userMoviesService.findById(id);
+        userMoviesService.deleteMovieForUser(movieToDelete);
         CustomUser user = userService.getUserAndMovies(userDetails.getUser());
         return returnListFragment(user, page, model);
     }
@@ -225,7 +223,23 @@ public class MovieController {
     public String updateWatchStatus(@RequestParam(defaultValue = "1", name = "page") Integer page, @RequestParam("title") String title,
                                     @RequestParam("year") String year, @RequestParam("status") String status, @AuthenticationPrincipal MyUserDetails userDetails, Model model) {
         CustomUser user = userService.getUserAndMovies(userDetails.getUser());
-        userService.updateMovieForUser(user, title, year, status);
+        UserMovies um = userMoviesService.findByUserAndTitle(user, title);
+        userMoviesService.updateWatchedStatus(um, status);
+        return returnListFragment(user, page, model);
+    }
+
+    @GetMapping("/updateScoreForm")
+    public String updateScoreForm(@RequestParam("page") int page, @RequestParam("id") int id, Model model){
+        model.addAttribute("page", page);
+        model.addAttribute("id", id);
+        return "/fragments/updateScoreForm :: updateScoreForm";
+    }
+
+    @PostMapping("/updateScore")
+    public String updateScore(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam("id") int id,
+                              @RequestParam("score") String score, @AuthenticationPrincipal MyUserDetails userDetails, Model model){
+        userMoviesService.updateScore(id, score);
+        CustomUser user = userService.getUserAndMovies(userDetails.getUser());
         return returnListFragment(user, page, model);
     }
 
@@ -258,7 +272,7 @@ public class MovieController {
      */
     private void addPaginationAttributes(Model model, CustomUser user, int page, int size) {
         int totalPages = (int) Math.ceil((double) user.getMovies().size() / size);
-        List<Movie> userMovies = userService.getPagedMovies(user, page, size);
+        List<UserMovies> userMovies = userService.getPagedMovies(user, page, size);
         model.addAttribute("movies", userMovies);
         model.addAttribute("page", page);
         model.addAttribute("totalPages", totalPages);

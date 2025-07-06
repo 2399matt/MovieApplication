@@ -1,7 +1,6 @@
 package com.MattyDubs.MovieProject.service;
 
 import com.MattyDubs.MovieProject.dao.MovieDAO;
-import com.MattyDubs.MovieProject.entity.CustomUser;
 import com.MattyDubs.MovieProject.entity.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,8 +21,8 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     @Transactional
-    public void save(Movie movie, CustomUser user) {
-        movieDAO.save(movie, user);
+    public Movie save(Movie movie) {
+        return movieDAO.save(movie);
     }
 
     @Override
@@ -49,31 +48,12 @@ public class MovieServiceImpl implements MovieService {
         return movieDAO.findAll();
     }
 
-    @Override
-    public List<Movie> findAllByUser(CustomUser user) {
-        return movieDAO.findAllByUser(user);
-    }
-
-    @Override
-    public List<Movie> findByTitleYearUser(String title, String year, CustomUser user) {
-        return movieDAO.findByTitleYearUser(title, year, user);
-    }
 
     @Override
     public Movie singleFindByTitleYear(String title, String year) {
         return movieDAO.singleFindByTitleYear(title, year);
     }
 
-    @Override
-    @Transactional
-    public void saveMovieForUser(CustomUser user, Movie movie) {
-        if (movieUserCheck(user, movie.getTitle())) {
-            movie.setUser(user);
-            //TODO below would break with UserDetails impl.
-            user.getMovies().add(movie);
-            movieDAO.save(movie, user);
-        }
-    }
 
     @Override
     @Transactional
@@ -81,8 +61,4 @@ public class MovieServiceImpl implements MovieService {
         movieDAO.updateMovie(movie);
     }
 
-    @Override
-    public boolean movieUserCheck(CustomUser user, String title) {
-        return movieDAO.movieUserCheck(user, title);
-    }
 }

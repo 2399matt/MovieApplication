@@ -1,7 +1,7 @@
 package com.MattyDubs.MovieProject.dao;
 
 import com.MattyDubs.MovieProject.entity.CustomUser;
-import com.MattyDubs.MovieProject.entity.Movie;
+import com.MattyDubs.MovieProject.entity.UserMovies;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +64,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public CustomUser getUserAndMovies(CustomUser user) {
-        List<Movie> movies = entityManager.createQuery("SELECT m FROM Movie m WHERE m.user.id = :id", Movie.class)
+        List<UserMovies> movies = entityManager.createQuery("SELECT m FROM UserMovies m LEFT JOIN FETCH m.movie WHERE m.user.id = :id", UserMovies.class)
                 .setParameter("id", user.getId())
                 .getResultList();
         user.setMovies(movies);

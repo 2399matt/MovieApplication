@@ -21,16 +21,16 @@ class MovieProjectApplicationTests {
 	void contextLoads() {
 	}
 
-	@Test
-	public void testCopy(){
-		Movie movie = new Movie();
-		movie.setYear("1999");
-		movie.setTitle("Matrix");
-
-		Movie copiedMovie = movieUtil.copyMovie(movie);
-		assertEquals("Matrix", copiedMovie.getTitle());
-		assertEquals("1999", copiedMovie.getYear());
-	}
+//	@Test
+//	public void testCopy(){
+//		Movie movie = new Movie();
+//		movie.setYear("1999");
+//		movie.setTitle("Matrix");
+//
+//		Movie copiedMovie = movieUtil.copyMovie(movie);
+//		assertEquals("Matrix", copiedMovie.getTitle());
+//		assertEquals("1999", copiedMovie.getYear());
+//	}
 
 	@Test
 	public void testTopMovieCopy(){

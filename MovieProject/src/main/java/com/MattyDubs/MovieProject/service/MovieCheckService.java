@@ -35,15 +35,18 @@ public class MovieCheckService {
                 .orElse(null);
         if (tm != null) {
             System.out.println("Found with top-movie DB!");
-            return movieUtil.mapFromTopMovieModel(tm);
+            Movie movie = movieUtil.mapFromTopMovieModel(tm);
+            return movieService.save(movie);
         } else {
             Movie movie = movieService.singleFindByTitleYear(title, year);
             if (movie != null) {
                 System.out.println("Found with movie-db!");
-                return movieUtil.copyMovie(movie);
+                return movie;
             } else {
+                //TODO: SAVE THE MOVIE AFTER THE API CALL, MOVIE TABLE IS NOW READONLY.
                 System.out.println("Found with API!");
-                return movieAPIService.getSingleMovie(title, year);
+                Movie apiMovie = movieAPIService.getSingleMovie(title, year);
+                return movieService.save(apiMovie);
             }
         }
 

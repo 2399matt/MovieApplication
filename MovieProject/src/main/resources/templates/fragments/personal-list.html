@@ -12,34 +12,46 @@
             <th>Rating</th>
             <th>Actions</th>
             <th>Watched</th>
+            <th>My Score</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="movie : ${movies}">
-            <td><img th:src="${movie.imageURL}" alt="Movie Poster" class="movie-poster"></td>
-            <td th:text="${movie.title}" style="word-wrap: break-word; white-space: normal;"></td>
-            <td th:text="${movie.year}" style="word-wrap: break-word;"></td>
-            <td th:text="${movie.genre}" style="word-wrap: break-word;"></td>
-            <td th:text="${movie.rated}" style="word-wrap: break-word;"></td>
+            <td><img th:src="${movie.movie.imageURL}" alt="Movie Poster" class="movie-poster"></td>
+            <td th:text="${movie.movie.title}" style="word-wrap: break-word; white-space: normal;"></td>
+            <td th:text="${movie.movie.year}" style="word-wrap: break-word;"></td>
+            <td th:text="${movie.movie.genre}" style="word-wrap: break-word;"></td>
+            <td th:text="${movie.movie.rated}" style="word-wrap: break-word;"></td>
             <td>
-                <a class="btn btn-dark btn-sm btn-custom"
-                   hx-swap="innerHTML"
-                   hx-target="#show-movie"
-                   th:hx-get="@{/movies/showMovieDetails(page=${page}, title=${movie.title}, year=${movie.year})}"
-                   onclick="scrollToMovieDetails()">Details</a>
-                <a class="btn btn-danger btn-sm btn-custom"
-                    th:hx-get="@{/movies/deleteMovie(page = ${page}, id=${movie.id})}"
-                    hx-target="#movieResults"
-                    hx-swap="innerHTML">Remove</a>
-                <div th:id="'watchButton'+${movie.id}">
-                <a class="btn btn-sm btn-secondary"
-                   hx:get="@{/movies/updateForm(page = ${page}, title = ${movie.title}, year =${movie.year})}"
-                   th:hx-target=" '#watchButton'+ ${movie.id}"
-                   hx-swap="innerHTML">Update</a>
+                <div class="d-flex flex-column gap-2">
+                    <a class="btn btn-dark btn-sm w-100 text-center"
+                       hx-swap="innerHTML"
+                       hx-target="#show-movie"
+                       th:hx-get="@{/movies/showMovieDetails(page=${page}, title=${movie.movie.title}, year=${movie.movie.year})}"
+                       onclick="scrollToMovieDetails()">Details</a>
+                    <a class="btn btn-danger btn-sm w-100 text-center"
+                       th:hx-get="@{/movies/deleteMovie(page = ${page}, id=${movie.id})}"
+                       hx-target="#movieResults"
+                       hx-swap="innerHTML">Remove</a>
+                    <div th:id="'watchButton'+${movie.id}">
+                        <a class="btn btn-secondary btn-sm w-100 text-center"
+                           hx:get="@{/movies/updateForm(page = ${page}, title = ${movie.movie.title}, year =${movie.movie.year})}"
+                           th:hx-target=" '#watchButton'+ ${movie.id}"
+                           hx-swap="innerHTML">Update Watched</a>
+                    </div>
+                    <div th:if="${movie.watched}" th:id="'scoreButton'+${movie.id}">
+                        <a class="btn btn-info btn-sm w-100 text-center"
+                           hx:get="@{/movies/updateScoreForm(page = ${page}, id=${movie.id})}"
+                           th:hx-target=" '#scoreButton'+ ${movie.id}"
+                           hx-swap="innerHTML">Update Score</a>
+                    </div>
                 </div>
             </td>
-            <td th:if="${movie.watched} == false">&#x274c</td>
-            <td th:if="${movie.watched} == true">&#10004;</td>
+            <td th:if="${movie.watched} == false" class="text-success text-center align-middle">&#x274c</td>
+            <td th:if="${movie.watched} == true" class="text-success text-center align-middle">&#10004;</td>
+            <td th:if="${movie.watched == true && movie.userRating > 0}" th:text="${movie.userRating} + '/10'"></td>
+            <td th:if="${movie.watched == false && movie.userRating == 0}">Not yet Rated</td>
+            <td th:if="${movie.watched == true && movie.userRating == 0}">Not yet Rated</td>
         </tr>
         </tbody>
     </table>

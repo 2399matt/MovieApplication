@@ -23,21 +23,21 @@ public class MovieUtil {
      * @param movie The movie object to be copied.
      * @return A new movie object with the same fields as the original movie.
      */
-    public Movie copyMovie(Movie movie) {
-        Movie newMovie = new Movie();
-        newMovie.setUser(movie.getUser());
-        newMovie.setYear(movie.getYear());
-        newMovie.setTitle(movie.getTitle());
-        newMovie.setActors(movie.getActors());
-        newMovie.setImdbId(movie.getImdbId());
-        newMovie.setDirector(movie.getDirector());
-        newMovie.setRated(movie.getRated());
-        newMovie.setScore(movie.getScore());
-        newMovie.setGenre(movie.getGenre());
-        newMovie.setPlot(movie.getPlot());
-        newMovie.setImageURL(movie.getImageURL());
-        return newMovie;
-    }
+//    public Movie copyMovie(Movie movie) {
+//        Movie newMovie = new Movie();
+//        newMovie.setId(movie.getId());
+//        newMovie.setYear(movie.getYear());
+//        newMovie.setTitle(movie.getTitle());
+//        newMovie.setActors(movie.getActors());
+//        newMovie.setImdbId(movie.getImdbId());
+//        newMovie.setDirector(movie.getDirector());
+//        newMovie.setRated(movie.getRated());
+//        newMovie.setScore(movie.getScore());
+//        newMovie.setGenre(movie.getGenre());
+//        newMovie.setPlot(movie.getPlot());
+//        newMovie.setImageURL(movie.getImageURL());
+//        return newMovie;
+//    }
 
     /**
      * mapFromTopMovieModel method is used to map the fields of a top-movie to a new movie object. This is used for if

@@ -26,7 +26,6 @@ import java.util.List;
 @RequestMapping("/forum")
 public class ForumController {
 
-    //TODO Add validation on inputs. Probably should setup a requestMatcher for forums LOL.
 
     private final PostService postService;
     private final ReplyService replyService;
@@ -70,7 +69,6 @@ public class ForumController {
      */
     @GetMapping("/viewPost")
     public String showPost(@RequestParam("id") int id, Model model) {
-        // n+1 Post post = postService.findById(id);
         Post post = postService.findPostUserAndReplies(id);
         model.addAttribute("post", post);
         return "/forumPages/PostView :: postView";

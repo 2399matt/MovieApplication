@@ -60,12 +60,12 @@ public class Movie {
     @Column(name = "director")
     private String director;
 
-    @Column(name = "watched", columnDefinition = "boolean default false")
-    private boolean watched;
+//    @Column(name = "watched", columnDefinition = "boolean default false")
+//    private boolean watched;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private CustomUser user;
+//    @ManyToOne
+//    @JoinColumn(name = "user_id")
+//    private CustomUser user;
 
     @JsonProperty("Type")
     @Transient
@@ -90,13 +90,13 @@ public class Movie {
         this.director = director;
     }
 
-    public boolean getWatched() {
-        return this.watched;
-    }
-
-    public void setWatched(Boolean bool) {
-        this.watched = bool;
-    }
+//    public boolean getWatched() {
+//        return this.watched;
+//    }
+//
+//    public void setWatched(Boolean bool) {
+//        this.watched = bool;
+//    }
 
     public String getType() {
         return type;
@@ -106,13 +106,13 @@ public class Movie {
         this.type = type;
     }
 
-    public CustomUser getUser() {
-        return user;
-    }
-
-    public void setUser(CustomUser user) {
-        this.user = user;
-    }
+//    public CustomUser getUser() {
+//        return user;
+//    }
+//
+//    public void setUser(CustomUser user) {
+//        this.user = user;
+//    }
 
     public String getImdbURL() {
         String imdbURL = "https://www.imdb.com/title/";
@@ -225,12 +225,12 @@ public class Movie {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Movie movie = (Movie) o;
-        return id == movie.id && Objects.equals(title, movie.title) && Objects.equals(year, movie.year) && Objects.equals(rated, movie.rated) && Objects.equals(genre, movie.genre) && Objects.equals(actors, movie.actors) && Objects.equals(plot, movie.plot) && Objects.equals(score, movie.score) && Objects.equals(imageURL, movie.imageURL) && Objects.equals(imdbId, movie.imdbId) && Objects.equals(director, movie.director) && Objects.equals(user, movie.user);
+        return id == movie.id && Objects.equals(title, movie.title) && Objects.equals(year, movie.year) && Objects.equals(rated, movie.rated) && Objects.equals(genre, movie.genre) && Objects.equals(actors, movie.actors) && Objects.equals(plot, movie.plot) && Objects.equals(score, movie.score) && Objects.equals(imageURL, movie.imageURL) && Objects.equals(imdbId, movie.imdbId) && Objects.equals(director, movie.director);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, year, rated, genre, actors, plot, score, imageURL, imdbId, director, user);
+        return Objects.hash(id, title, year, rated, genre, actors, plot, score, imageURL, imdbId, director);
     }
 
 }

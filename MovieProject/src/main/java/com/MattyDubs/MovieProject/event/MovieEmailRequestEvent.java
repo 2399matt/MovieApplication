@@ -1,16 +1,16 @@
 package com.MattyDubs.MovieProject.event;
 
 import com.MattyDubs.MovieProject.entity.CustomUser;
-import com.MattyDubs.MovieProject.entity.Movie;
+import com.MattyDubs.MovieProject.entity.UserMovies;
 
 import java.util.List;
 
 public class MovieEmailRequestEvent {
 
-    private final List<Movie> movies;
+    private final List<UserMovies> movies;
     private final CustomUser user;
 
-    public MovieEmailRequestEvent(List<Movie> movies, CustomUser user) {
+    public MovieEmailRequestEvent(List<UserMovies> movies, CustomUser user) {
         this.movies = movies;
         this.user = user;
     }
@@ -19,7 +19,7 @@ public class MovieEmailRequestEvent {
         return user;
     }
 
-    public List<Movie> getMovies() {
+    public List<UserMovies> getMovies() {
         return movies;
     }
 

@@ -12,15 +12,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class RegistrationService {
 
-    private final MyUserDetailsService userDetailsService;
 
     private final UserService userService;
 
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public RegistrationService(MyUserDetailsService userDetailsService, UserService userService, PasswordEncoder passwordEncoder) {
-        this.userDetailsService = userDetailsService;
+    public RegistrationService(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }

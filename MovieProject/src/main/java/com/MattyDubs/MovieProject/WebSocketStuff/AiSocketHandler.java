@@ -55,3 +55,4 @@ public class AiSocketHandler extends TextWebSocketHandler {
         }
     }
 }
+

@@ -46,16 +46,15 @@ public class Post {
         this.upvotes = 0;
     }
 
-    public Integer getUpvotes() {
+    public synchronized Integer getUpvotes() {
         return upvotes;
     }
 
-    public void setUpvotes(Integer upvotes) {
+    public synchronized void setUpvotes(Integer upvotes) {
         this.upvotes = upvotes;
     }
 
-    //TODO Synchronization, not thread safe right now.-------------------------------------
-    public void addVote() {
+    public synchronized void addVote() {
         this.upvotes++;
     }
 

@@ -25,14 +25,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public MyUserDetailsService userDetailsService(UserService userService) {
-        return new MyUserDetailsService(userService);
-    }
-
-    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-
                 .authorizeHttpRequests(config ->
                         config
                                 .requestMatchers("/register/**").permitAll()

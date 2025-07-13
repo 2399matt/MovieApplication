@@ -21,7 +21,7 @@ public class Listener {
 
     @EventListener
     public void onRegistration(RegistrationEvent event) {
-        CustomUser user = event.getUser();
+        CustomUser user = event.user();
         try {
             emailSender.sendEmail(user.getEmail(), "Welcome!", "Welcome to the movie application, " + user.getUsername() + "!");
         } catch (MailSendException e) {
@@ -31,8 +31,8 @@ public class Listener {
 
     @EventListener
     public void sendMovieList(MovieEmailRequestEvent event) {
-        CustomUser user = event.getUser();
-        List<UserMovies> movies = event.getMovies();
+        CustomUser user = event.user();
+        List<UserMovies> movies = event.movies();
         String str = "";
         for (UserMovies movie : movies) {
             str += movie.getMovie().getTitle() + "\n";

@@ -263,7 +263,7 @@ public class MovieController {
     }
 
     /**
-     * Helper method to get pageination logic for users personal list page.
+     * Helper method to get pagination logic for users personal list page.
      *
      * @param model The model.
      * @param user  The current user.
@@ -279,7 +279,7 @@ public class MovieController {
     }
 
     /**
-     * Helper method used to bundle the pageination logic and return statement for the users list page.
+     * Helper method used to bundle the pagination logic and return statement for the users list page.
      *
      * @param user  The current user.
      * @param page  The current page that the user is on.

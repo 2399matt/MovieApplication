@@ -60,13 +60,6 @@ public class Movie {
     @Column(name = "director")
     private String director;
 
-//    @Column(name = "watched", columnDefinition = "boolean default false")
-//    private boolean watched;
-
-//    @ManyToOne
-//    @JoinColumn(name = "user_id")
-//    private CustomUser user;
-
     @JsonProperty("Type")
     @Transient
     private String type;
@@ -90,14 +83,6 @@ public class Movie {
         this.director = director;
     }
 
-//    public boolean getWatched() {
-//        return this.watched;
-//    }
-//
-//    public void setWatched(Boolean bool) {
-//        this.watched = bool;
-//    }
-
     public String getType() {
         return type;
     }
@@ -105,14 +90,6 @@ public class Movie {
     public void setType(String type) {
         this.type = type;
     }
-
-//    public CustomUser getUser() {
-//        return user;
-//    }
-//
-//    public void setUser(CustomUser user) {
-//        this.user = user;
-//    }
 
     public String getImdbURL() {
         String imdbURL = "https://www.imdb.com/title/";

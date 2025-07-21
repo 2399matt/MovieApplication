@@ -92,6 +92,7 @@
 </head>
 <body>
 <div class="login-container">
+    <h2 th:if="${success}" th:text="${success}" style="color:green"></h2>
     <div class="login-header">Login</div>
     <div th:if="${param.error}" class="error-message">Invalid username or password</div>
 

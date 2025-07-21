@@ -22,4 +22,6 @@ public interface UserDAO {
     boolean checkUserExists(String username);
 
     CustomUser getUserAndMovies(CustomUser user);
+
+    CustomUser findByToken(String token);
 }

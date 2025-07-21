@@ -62,7 +62,7 @@ public class UserMoviesService {
     }
 
     @Transactional
-    public void updateScore(int id, String score){
+    public void updateScore(int id, String score) {
         UserMovies movieToUpdate = findById(id);
         movieToUpdate.setUserRating(Integer.parseInt(score));
         userMoviesDAO.updateUserMovie(movieToUpdate);

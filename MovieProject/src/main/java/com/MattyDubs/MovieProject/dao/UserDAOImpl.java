@@ -36,6 +36,16 @@ public class UserDAOImpl implements UserDAO {
         }
     }
 
+    public CustomUser findByToken(String token) {
+        try {
+            return entityManager.createQuery("SELECT u FROM CustomUser u WHERE u.verificationToken = :token", CustomUser.class)
+                    .setParameter("token", token)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
     public CustomUser findUserAndMovies(String username) {
 
         // JOIN FETCH used here to reduce the number of queries to the DB.

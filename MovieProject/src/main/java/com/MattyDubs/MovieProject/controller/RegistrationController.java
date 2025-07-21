@@ -74,4 +74,11 @@ public class RegistrationController {
         publisher.publishEvent(new RegistrationEvent(user));
         return "login-form";
     }
+
+    @GetMapping("/verify")
+    public String verifyUser(@RequestParam("token") String token, Model model) {
+        registrationService.activateUser(token);
+        model.addAttribute("success", "Verification successful!");
+        return "login-form";
+    }
 }

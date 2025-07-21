@@ -1,10 +1,11 @@
 package com.MattyDubs.MovieProject.service;
 
 import com.MattyDubs.MovieProject.entity.CustomUser;
-import com.MattyDubs.MovieProject.security.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 /**
  * Registration service class used to build a webUser and CustomUser objects.
@@ -29,8 +30,17 @@ public class RegistrationService {
      * @param user The CustomUser object filled in by the user.
      */
     public void registerUser(CustomUser user) {
-        user.setEnabled(true);
+        UUID uuid = UUID.randomUUID();
+        String token = uuid.toString().replace("-", "");
+        user.setVerificationToken(token);
+        user.setEnabled(false);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userService.save(user);
+    }
+
+    public void activateUser(String token) {
+        CustomUser user = userService.findByToken(token);
+        user.setEnabled(true);
         userService.save(user);
     }
 }

@@ -11,8 +11,8 @@ import java.util.List;
 
 
 /**
- * CustomUser entity, uses the webUser username to provide a corresponding customuser object.
- * Mapped with the movie class to allow users to have their own personal list of movies.
+ * CustomUser entity, represents a user and their relationships with movies, posts, replies.
+ * UserDetails will hold an instance of a CustomUser upon authentication success.
  */
 @Entity
 @Table(name = "customusers")
@@ -38,8 +38,11 @@ public class CustomUser {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "enabled", columnDefinition = "boolean default true")
+    @Column(name = "enabled", columnDefinition = "boolean default false")
     private boolean enabled;
+
+    @Column(name = "verification_token")
+    private String verificationToken;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<UserMovies> movies;
@@ -73,7 +76,7 @@ public class CustomUser {
         this.password = password;
     }
 
-    public boolean isEnabled() {
+    public boolean getEnabled() {
         return enabled;
     }
 
@@ -142,5 +145,13 @@ public class CustomUser {
         }
         post.setUser(this);
         posts.add(post);
+    }
+
+    public String getVerificationToken() {
+        return verificationToken;
+    }
+
+    public void setVerificationToken(String verificationToken) {
+        this.verificationToken = verificationToken;
     }
 }

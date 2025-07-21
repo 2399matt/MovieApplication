@@ -202,6 +202,7 @@ public class MovieController {
      */
     @GetMapping("/updateForm")
     public String updateForm(@RequestParam(defaultValue = "1", name = "page") Integer page, @RequestParam("title") String title, @RequestParam("year") String year, Model model) {
+        //TODO: WE ONLY NEED THE USERMOVIE OBJECT ID TO UPDATE WATCHED STATUS NOW, CAN MAKE IT MORE SIMPLE.
         model.addAttribute("title", title);
         model.addAttribute("year", year);
         model.addAttribute("page", page);
@@ -229,7 +230,7 @@ public class MovieController {
     }
 
     @GetMapping("/updateScoreForm")
-    public String updateScoreForm(@RequestParam("page") int page, @RequestParam("id") int id, Model model){
+    public String updateScoreForm(@RequestParam("page") int page, @RequestParam("id") int id, Model model) {
         model.addAttribute("page", page);
         model.addAttribute("id", id);
         return "/fragments/updateScoreForm :: updateScoreForm";
@@ -237,7 +238,7 @@ public class MovieController {
 
     @PostMapping("/updateScore")
     public String updateScore(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam("id") int id,
-                              @RequestParam("score") String score, @AuthenticationPrincipal MyUserDetails userDetails, Model model){
+                              @RequestParam("score") String score, @AuthenticationPrincipal MyUserDetails userDetails, Model model) {
         userMoviesService.updateScore(id, score);
         CustomUser user = userService.getUserAndMovies(userDetails.getUser());
         return returnListFragment(user, page, model);

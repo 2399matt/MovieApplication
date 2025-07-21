@@ -147,7 +147,6 @@ public class ForumController {
         return "/forumPages/PostView :: postView";
     }
 
-    //TODO CHANGING TO CHECK WITH PRINCIPAL, MIGHT BREAK <<<<<<<<<<<<<<<<<<<<<
 
     @GetMapping("/upVote")
     public String upVote(@RequestParam(name = "id") int id, Model model, @AuthenticationPrincipal MyUserDetails userDetails) {

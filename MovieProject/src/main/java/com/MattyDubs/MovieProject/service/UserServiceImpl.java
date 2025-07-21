@@ -48,4 +48,13 @@ public class UserServiceImpl implements UserService {
     public CustomUser getUserAndMovies(CustomUser user) {
         return userDAO.getUserAndMovies(user);
     }
+
+    @Override
+    public CustomUser findByToken(String token) {
+        CustomUser user = userDAO.findByToken(token);
+        if (user == null) {
+            throw new RuntimeException("User with token: " + token + "Not found");
+        }
+        return user;
+    }
 }

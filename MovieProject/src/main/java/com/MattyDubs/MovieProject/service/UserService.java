@@ -21,4 +21,6 @@ public interface UserService {
 
     CustomUser getUserAndMovies(CustomUser user);
 
+    CustomUser findByToken(String token);
+
 }

@@ -1,0 +1,59 @@
+services:
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: movies_rating_test
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
+    volumes:
+      - ./mysql-init:/docker-entrypoint-initdb.d
+      - mysql-data:/var/lib/mysql
+    networks:
+      - my-net
+    ports:
+      - "3308:3306"
+
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-model:/root/.ollama/models
+    networks:
+      - my-net
+    entrypoint: sh
+    command: -c "ollama serve & sleep 5 && ollama pull llama3.1:8b && wait"
+
+  movie-app:
+    build: .
+    depends_on:
+      - mysql
+      - ollama
+    environment:
+      SPRING_DATASOURCE_URL: ${DB_URL}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASS}
+      SPRING_MAIL_USERNAME: ${MAIL_USER}
+      SPRING_MAIL_PASSWORD: ${MAIL_PASS}
+      SPRING_MAIL_HOST: ${MAIL_HOST}
+      SPRING_MAIL_PORT: ${MAIL_PORT}
+      API_KEY: ${API_KEY}
+      SPRING_AI_OLLAMA_BASE_URL: ${AI_URL}
+    networks:
+      - my-net
+    ports:
+      - "8080:8080"
+
+networks:
+  my-net:
+
+volumes:
+  mysql-data:
+  ollama-model:
+
+

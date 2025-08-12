@@ -2,6 +2,7 @@ package com.MattyDubs.MovieProject.WebSocketStuff;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -48,6 +49,7 @@ public class AiSocketHandler extends TextWebSocketHandler {
     }
 
 
+    // delegate some logic to other methods, this got boggled down with too many exception cases.
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         ChatMessage chatMessage = objectMapper.readValue(message.getPayload(), ChatMessage.class);
@@ -62,7 +64,7 @@ public class AiSocketHandler extends TextWebSocketHandler {
         try {
             return chatClient.prompt(message).call().content();
         } catch (Exception e) {
-            System.out.println("WS error: " + e.getMessage());
+            System.out.println("Ollama error: " + e.getMessage());
             throw new CompletionException(e);
         }
     }

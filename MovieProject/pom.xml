@@ -110,6 +110,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>movie-app</finalName>
 	</build>
 
 </project>

@@ -147,6 +147,12 @@ public class CustomUser {
         posts.add(post);
     }
 
+    public String getTokenUrl() {
+        return String.format("Welcome to the movie application, %s!\n Please click" +
+                "the link below to verify your email: \n" +
+                "http://%s:8080/register/verify?token=%s", this.username, "localhost", this.verificationToken);
+    }
+
     public String getVerificationToken() {
         return verificationToken;
     }

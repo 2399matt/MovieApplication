@@ -1,5 +1,10 @@
 # Movie Tracker App
 
+## Install
+
+Configure your .env file (example included). Run 'docker compose up --build'. Docker will spin up the Spring app on a JDK container, a mySQL database with
+your credentials (table creation will be done), as well as a container for the Ollama server (model will be pulled on build). 
+
 ## Project Goal
 Build a full-stack web application where users can search for movies, manage a personal watchlist, use forums to create post / replies, and integrate an AI bot.
 

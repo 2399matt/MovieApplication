@@ -56,7 +56,7 @@ public class MovieController {
     @GetMapping("/searchMovies")
     public String searchInsert(Model model) {
         model.addAttribute("movieInfo", new MovieSearch());
-        return "/fragments/search-frag :: search-frag";
+        return "fragments/search-frag :: search-frag";
     }
 
     /**
@@ -98,7 +98,6 @@ public class MovieController {
      */
     @PostMapping("/save")
     public String saveMovie(@ModelAttribute("movie") Movie movie, @AuthenticationPrincipal MyUserDetails userDetails, Model model) {
-        //TODO We'll
         userMoviesService.saveMovieForUser(movie, userDetails.getUser());
         CustomUser user = userService.getUserAndMovies(userDetails.getUser());
         int page = 1;
@@ -187,7 +186,7 @@ public class MovieController {
         model.addAttribute("browsePage", page);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("browseGenre", genre);
-        return "/fragments/browse-frag :: browse-frag";
+        return "fragments/browse-frag :: browse-frag";
     }
 
     /**
@@ -206,7 +205,7 @@ public class MovieController {
         model.addAttribute("title", title);
         model.addAttribute("year", year);
         model.addAttribute("page", page);
-        return "/fragments/updateForm :: updateForm";
+        return "fragments/updateForm :: updateForm";
     }
 
     /**
@@ -233,7 +232,7 @@ public class MovieController {
     public String updateScoreForm(@RequestParam("page") int page, @RequestParam("id") int id, Model model) {
         model.addAttribute("page", page);
         model.addAttribute("id", id);
-        return "/fragments/updateScoreForm :: updateScoreForm";
+        return "fragments/updateScoreForm :: updateScoreForm";
     }
 
     @PostMapping("/updateScore")
@@ -252,7 +251,7 @@ public class MovieController {
      */
     @GetMapping("/clear-search")
     public String clearSearch() {
-        return "/fragments/empty :: empty";
+        return "fragments/empty :: empty";
     }
 
     @GetMapping("/email-movie-list")
@@ -289,7 +288,9 @@ public class MovieController {
      */
     private String returnListFragment(CustomUser user, int page, Model model) {
         addPaginationAttributes(model, user, page, 10);
-        return "/fragments/personal-list :: movie-list";
+        return "fragments/personal-list :: movie-list";
     }
 
 }
+
+

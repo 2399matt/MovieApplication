@@ -45,7 +45,7 @@ public class ForumController {
      */
     @GetMapping("/home")
     public String homePage() {
-        return "/forumPages/forumHome";
+        return "forumPages/forumHome";
     }
 
     /**
@@ -57,7 +57,7 @@ public class ForumController {
     @GetMapping("/forums")
     public String showForums(Model model) {
         model.addAttribute("forums", postService.findAllContent());
-        return "/forumPages/forums :: forumFrag";
+        return "forumPages/forums :: forumFrag";
     }
 
     /**
@@ -71,7 +71,7 @@ public class ForumController {
     public String showPost(@RequestParam("id") int id, Model model) {
         Post post = postService.findPostUserAndReplies(id);
         model.addAttribute("post", post);
-        return "/forumPages/PostView :: postView";
+        return "forumPages/PostView :: postView";
     }
 
     /**
@@ -83,7 +83,7 @@ public class ForumController {
     @GetMapping("postForm")
     public String postForm(Model model) {
         model.addAttribute("post", new Post());
-        return "/forumPages/postForm :: postForm";
+        return "forumPages/postForm :: postForm";
     }
 
     /**
@@ -97,14 +97,14 @@ public class ForumController {
     @PostMapping("/savePost")
     public String savePost(@Valid @ModelAttribute("post") Post post, BindingResult br, @AuthenticationPrincipal MyUserDetails userDetails, Model model) {
         if (br.hasErrors()) {
-            return "/forumPages/postForm :: postForm";
+            return "forumPages/postForm :: postForm";
         } else {
             CustomUser user = userDetails.getUser();
             postService.savePostForPage(user, post);
             Likes like = new Likes();
             likesServiceImpl.saveLikes(like, user, post);
             model.addAttribute("forums", postService.findAllContent());
-            return "/forumPages/forums :: forumFrag";
+            return "forumPages/forums :: forumFrag";
         }
     }
 
@@ -120,7 +120,7 @@ public class ForumController {
         model.addAttribute("badReply", badReply);
         model.addAttribute("reply", new Reply());
         model.addAttribute("postId", postId);
-        return "/forumPages/replyForm :: replyForm";
+        return "forumPages/replyForm :: replyForm";
     }
 
     /**
@@ -138,13 +138,13 @@ public class ForumController {
         if (reply.getComment().isEmpty() || reply.getComment().length() > 255) {
             model.addAttribute("post", postService.findPostUserAndReplies(postId));
             model.addAttribute("badReply", true);
-            return "/forumPages/PostView :: postView";
+            return "forumPages/PostView :: postView";
         }
         CustomUser user = userDetails.getUser();
         Post currPost = postService.findPostUserAndReplies(postId);
         replyService.saveReplyForPage(reply, user, currPost);
         model.addAttribute("post", currPost);
-        return "/forumPages/PostView :: postView";
+        return "forumPages/PostView :: postView";
     }
 
 
@@ -159,7 +159,7 @@ public class ForumController {
             postService.update(currPost);
         }
         model.addAttribute("post", currPost);
-        return "/forumPages/PostView :: postView";
+        return "forumPages/PostView :: postView";
     }
 
     @GetMapping("/likes")
@@ -167,7 +167,7 @@ public class ForumController {
         CustomUser user = userDetails.getUser();
         List<Post> posts = likesServiceImpl.findPostsLikedByUser(user);
         model.addAttribute("forums", posts);
-        return "/forumPages/forums :: forumFrag";
+        return "forumPages/forums :: forumFrag";
 
     }
 }

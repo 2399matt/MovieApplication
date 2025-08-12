@@ -16,9 +16,6 @@ public class Listener {
 
     private final EmailSender emailSender;
 
-    @Value("${APP_PORT}")
-    private String url;
-
     @Autowired
     public Listener(EmailSender emailSender) {
         this.emailSender = emailSender;
@@ -30,9 +27,7 @@ public class Listener {
             try {
                 CustomUser user = event.user();
                 try {
-                    emailSender.sendEmail(user.getEmail(), "Welcome!", "Welcome to the movie application, " + user.getUsername() + "!\n Please click" +
-                            "the link below to verify your email: \n" +
-                            "http://" + url + ":8080/register/verify?token=" + user.getVerificationToken());
+                    emailSender.sendEmail(user.getEmail(), "Welcome!", user.getTokenUrl());
                 } catch (MailSendException e) {
                     System.out.println("Error sending email to: " + user.getEmail() + " " + e.getMessage());
                 }
